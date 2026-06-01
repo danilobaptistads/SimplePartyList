@@ -259,14 +259,14 @@ Cada service segue o fluxo:
 - [x] Criar `ChosenListService.cs` (implementação)
 
 #### 2B - ItemService
-- [ ] Criar `IItemService.cs` (interface)
-- [ ] Criar `ItemServiceTests.cs` com testes:
-  - Adicionar item novo
-  - Adicionar item existente (reuso)
-  - Editar item não escolhido
-  - Deletar item não escolhido
-  - Bloquear edição/deleção de item escolhido
-  - Cota: respeitar `MaxQuantity`
+- [x] Criar `IItemService.cs` (interface) — `AddNewAsync`, `SearchByNameAsync`, `GetByIdAsync`, `UpdateAsync`, `DeleteAsync`, `GetByListUrlAsync`
+- [x] Criar `ItemServiceTests.cs` com 11 testes (InMemory):
+  - `AddNewAsync_ShouldCreateItem_WithCota` / `WithoutCota`
+  - `SearchByNameAsync_ShouldReturnMatchingItems` / `Empty_WhenNoMatch`
+  - `GetByIdAsync_ShouldReturnItem` / `Null_WhenNotFound`
+  - `UpdateAsync_ShouldPersistChanges` / `ShouldThrow_WhenNotFound`
+  - `DeleteAsync_ShouldRemoveItem` / `ShouldThrow_WhenNotFound`
+  - `GetByListUrlAsync_ShouldReturnItems` / `Empty_WhenNoItems`
 - [ ] *Aguardar revisão → criar `ItemService.cs`*
 
 #### 2C - ChosenService
