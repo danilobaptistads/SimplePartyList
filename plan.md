@@ -250,12 +250,13 @@ ChosenList 1──* Chosen
 
 Cada service segue o fluxo:
 1. Criar **Interface** no `Core`
-2. Criar **Testes** (xUnit + Moq + InMemory) — você revisa
+2. Criar **Testes** (xUnit + InMemory) — você revisa
 3. Após aprovação, criar a **implementação do Service** na Infrastructure
 
 #### 2A - ChosenListService
 - [x] Criar `IChosenListService.cs` (interface)
-- [ ] *Aguardar revisão → criar `ChosenListService.cs`*
+- [x] Criar `ChosenListServiceTests.cs` (7 testes — InMemory)
+- [x] Criar `ChosenListService.cs` (implementação)
 
 #### 2B - ItemService
 - [ ] Criar `IItemService.cs` (interface)
