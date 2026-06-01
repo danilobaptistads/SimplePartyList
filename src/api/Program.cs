@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SimplePartyList.Core.Entities;
+using SimplePartyList.Core.Interfaces;
 using SimplePartyList.Infrastructure.Data;
+using SimplePartyList.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +52,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddScoped<IChosenListService, ChosenListService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
