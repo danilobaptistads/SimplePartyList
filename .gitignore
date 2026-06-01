@@ -18,3 +18,8 @@ obj/
 # OS
 Thumbs.db
 .DS_Store
+
+# Database
+*.db
+*.db-shm
+*.db-wal
