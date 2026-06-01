@@ -7,7 +7,7 @@
 - Blazor Server (Interactive Server)
 - Entity Framework Core
 - SQLite
-- ASP.NET Core Identity
+- ASP.NET Core Identity + JWT Bearer
 - xUnit (TDD)
 
 ---
@@ -195,6 +195,29 @@ ChosenList 1──* Chosen
 
 ---
 
+## Autenticação (JWT Bearer)
+
+- Admin registra/login via `AuthController`
+- API retorna um **JWT token** com claims (UserId, Email, Name)
+- Token expira conforme `Jwt.ExpireMinutes` (ex: 60 min)
+- `ChosenListController`, `ItemController`, `ChosenController` exigem `[Authorize]`
+- Rota pública: apenas `POST /api/auth/login` e `POST /api/auth/register`
+- Swagger configurado com `AddSecurityDefinition` (Bearer) para testes
+
+**Config (appsettings.json):**
+```json
+"Jwt": {
+  "Key": "chave-super-segura-com-32-caracteres!",
+  "Issuer": "SimplePartyList",
+  "Audience": "SimplePartyList",
+  "ExpireMinutes": 60
+}
+```
+
+**Pacote NuGet:** `Microsoft.AspNetCore.Authentication.JwtBearer`
+
+---
+
 ## Etapas de Desenvolvimento
 
 ### Etapa 1 - Setup + Modelagem
@@ -210,6 +233,9 @@ ChosenList 1──* Chosen
 - [x] Configurar connection string SQLite em `appsettings.json`
 - [x] Remover `Class1.cs` placeholder da Infrastructure
 - [x] Criar `DbInitializer` com seed automático do `SplAdmin` (user: `spladmin` / email: `spladmin@spl.com` / senha: `SplAdmin@123`)
+- [ ] Adicionar `Microsoft.AspNetCore.Authentication.JwtBearer` (pacote NuGet)
+- [ ] Configurar JWT no `appsettings.json` (Key, Issuer, Audience, ExpireMinutes)
+- [ ] Configurar `AddAuthentication().AddJwtBearer()` no `Program.cs` da API
 
 ### Etapa 2 - TDD (Testes dos Services) — Ciclo por Service
 
@@ -253,7 +279,7 @@ Cada service segue o fluxo:
 - [ ] Testes de integração com SQLite real
 
 ### Etapa 4 - API Controllers
-- [ ] `AuthController` (register/login Identity)
+- [ ] `AuthController` (register/login Identity + gerar JWT)
 - [ ] `ChosenListController` (CRUD lista + geração link)
 - [ ] `ItemController` (CRUD itens)
 - [ ] `ChosenController` (submeter/confirmar/deletar escolha)
