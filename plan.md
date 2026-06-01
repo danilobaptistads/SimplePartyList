@@ -25,8 +25,8 @@ SimplePartyList/
 │   │   │   ├── ChosenListController.cs
 │   │   │   ├── ItemController.cs
 │   │   │   └── ChosenController.cs
-│   │   ├── Program.cs                    # template weather forecast (falta configurar)
-│   │   ├── appsettings.json
+│   │   ├── Program.cs                    # configurado (DbContext, Identity, CORS)
+│   │   ├── appsettings.json              # connection string SQLite
 │   │   ├── appsettings.Development.json
 │   │   ├── Properties/
 │   │   │   └── launchSettings.json
@@ -34,7 +34,7 @@ SimplePartyList/
 │   │   └── api.csproj
 │   │
 │   ├── core/                             # Entidades, Interfaces, DTOs
-│   │   ├── Entities/                     # (planejado)
+│   │   ├── Entities/                     ✅ Admin, Event, ChosenList, Item, Chosen
 │   │   │   ├── Admin.cs
 │   │   │   ├── Event.cs
 │   │   │   ├── ChosenList.cs
@@ -44,32 +44,22 @@ SimplePartyList/
 │   │   │   ├── IChosenListService.cs
 │   │   │   ├── IItemService.cs
 │   │   │   └── IChosenService.cs
-│   │   ├── DTOs/                         # (planejado)
-│   │   │   ├── CreateItemDto.cs
-│   │   │   ├── SubmitChoiceDto.cs
-│   │   │   ├── ConfirmChoiceDto.cs
-│   │   │   └── ...
+│   │   ├── DTOs/                         ✅ LoginDto, RegisterDto
+│   │   │   ├── LoginDto.cs
+│   │   │   ├── RegisterDto.cs
+│   │   │   └── ... (itens, escolhas)
 │   │   └── core.csproj
 │   │
-│   ├── infrastructure/                   # EF Core, Repositories, Migrations
-│   │   ├── Data/                         # (planejado)
-│   │   │   ├── AppDbContext.cs
-│   │   │   └── Configurations/
-│   │   │       ├── AdminConfiguration.cs
-│   │   │       ├── EventConfiguration.cs
-│   │   │       ├── ChosenListConfiguration.cs
-│   │   │       ├── ItemConfiguration.cs
-│   │   │       └── ChosenConfiguration.cs
-│   │   ├── Repositories/                 # (planejado)
-│   │   │   ├── ChosenListRepository.cs
-│   │   │   ├── ItemRepository.cs
-│   │   │   └── ChosenRepository.cs
+│   ├── infrastructure/                   # EF Core, Repositories, Services
+│   │   ├── Data/
+│   │   │   ├── SimplePartyListContext.cs ✅
+│   │   │   ├── DbInitializer.cs          ✅ (seed SplAdmin)
+│   │   │   └── Database/                 ✅ (banco SQLite local)
 │   │   ├── Services/                     # (planejado)
 │   │   │   ├── ChosenListService.cs
 │   │   │   ├── ItemService.cs
 │   │   │   └── ChosenService.cs
-│   │   ├── Migrations/                   # (planejado)
-│   │   ├── Class1.cs                     # placeholder (remover)
+│   │   ├── Migrations/                   ✅ InitialCreate
 │   │   └── infrastructure.csproj
 │   │
 │   └── web/                              # Blazor Server
@@ -110,15 +100,14 @@ SimplePartyList/
     │   │   └── ChosenServiceTests.cs
     │   └── Integration/                  # (planejado)
     │       └── PersistenceTests.cs
-    ├── UnitTest1.cs                      # placeholder (remover)
     └── tests.csproj
 ```
 
 ### Fluxo de Comunicação entre Projetos
 
 ```
-Web (Blazor Server) ──HTTP──> API ──DI──> Infrastructure ──EF──> SQLite
-                                    Core (entities/interfaces)
+Web (Blazor Server) ──HTTP──> API ──DI──> Infrastructure (Services) ──EF──> SQLite
+                                    Core (entities/interfaces/DTOs)
 ```
 
 - `api` referencia `core` + `infrastructure`
@@ -137,7 +126,6 @@ Web (Blazor Server) ──HTTP──> API ──DI──> Infrastructure ──E
 | `Id` | `string` (herdado do IdentityUser) |
 | `Name` | `string` |
 | `Events` | `ICollection<Event>` |
-| `Items` | `ICollection<Item>` |
 
 ### Event
 
@@ -181,7 +169,6 @@ Web (Blazor Server) ──HTTP──> API ──DI──> Infrastructure ──E
 
 ```
 Admin  1──*  Event
-Admin  1──*  Item
 Event  1──1  ChosenList
 ChosenList 1──* Item
 ChosenList 1──* Chosen
@@ -214,40 +201,54 @@ ChosenList 1──* Chosen
 - [x] Criar solution `SimplePartyList.sln`
 - [x] Criar projetos: `API`, `Core`, `Infrastructure`, `Web`, `Tests`
 - [x] Instalar pacotes NuGet (EF Core SQLite, Identity, etc.)
-  - ✅ `Infrastructure`: `Microsoft.AspNetCore.Identity.EntityFrameworkCore` + `Microsoft.EntityFrameworkCore.Sqlite` v9.0.0
-  - ✅ `API`: `Microsoft.AspNetCore.Identity.EntityFrameworkCore` + `Microsoft.AspNetCore.OpenApi` v9.0.0
-  - ✅ `Tests`: `xunit` v2.9.2, `Moq` v4.20.72, `coverlet.collector` v6.0.2, `Microsoft.EntityFrameworkCore.InMemory` v9.0.0, `Microsoft.NET.Test.Sdk` v17.11.1
-  - ❌ `Core` e `Web` sem pacotes ainda
 - [x] Criar classes de entidade (`Admin`, `Event`, `ChosenList`, `Item`, `Chosen`)
 - [x] Modelagem finalizada (relacionamentos definidos)
-- [ ] Criar `AppDbContext` herdando `IdentityDbContext<Admin>`
-- [ ] Configurar Fluent API nas `Configurations`
-- [ ] Criar migration inicial
-- [ ] Configurar `Program.cs` da API (DI, DbContext, Identity, Swagger) — *atualmente está o template weather forecast*
+- [x] Criar `SimplePartyListContext` herdando `IdentityDbContext<Admin>`
+- [x] Configurar Fluent API no `OnModelCreating`
+- [x] Criar migration `InitialCreate` e aplicar ao banco SQLite
+- [x] Configurar `Program.cs` da API (DbContext, Identity, CORS, Controllers)
+- [x] Configurar connection string SQLite em `appsettings.json`
+- [x] Remover `Class1.cs` placeholder da Infrastructure
+- [x] Criar `DbInitializer` com seed automático do `SplAdmin` (user: `spladmin` / email: `spladmin@spl.com` / senha: `SplAdmin@123`)
 
-### Etapa 2 - TDD (Testes dos Services)
-- [ ] Configurar xUnit + Moq + InMemory provider — *pacotes já instalados, mas sem testes escritos*
-- [ ] **`ChosenListServiceTests`**:
+### Etapa 2 - TDD (Testes dos Services) — Ciclo por Service
+
+Cada service segue o fluxo:
+1. Criar **Interface** no `Core`
+2. Criar **Testes** (xUnit + Moq + InMemory) — você revisa
+3. Após aprovação, criar a **implementação do Service** na Infrastructure
+
+#### 2A - ChosenListService
+- [ ] Criar `IChosenListService.cs` (interface)
+- [ ] Criar `ChosenListServiceTests.cs` com testes:
   - Criar lista → gera GUID + data de expiração correta
   - Obter lista por link GUID
   - Link expirado → bloqueia escolhas
-- [ ] **`ItemServiceTests`**:
+- [ ] *Aguardar revisão → criar `ChosenListService.cs`*
+
+#### 2B - ItemService
+- [ ] Criar `IItemService.cs` (interface)
+- [ ] Criar `ItemServiceTests.cs` com testes:
   - Adicionar item novo
   - Adicionar item existente (reuso)
   - Editar item não escolhido
   - Deletar item não escolhido
   - Bloquear edição/deleção de item escolhido
   - Cota: respeitar `MaxQuantity`
-- [ ] **`ChosenServiceTests`**:
+- [ ] *Aguardar revisão → criar `ItemService.cs`*
+
+#### 2C - ChosenService
+- [ ] Criar `IChosenService.cs` (interface)
+- [ ] Criar `ChosenServiceTests.cs` com testes:
   - Submeter escolha (sem nome ainda)
   - Confirmar escolha (associa `GuestName`)
   - Bloquear escolha se cota estourada
   - Bloquear escolha se lista expirada
   - Deletar escolha (admin only) → libera cota
+- [ ] *Aguardar revisão → criar `ChosenService.cs`*
 
 ### Etapa 3 - Persistência
-- [ ] Implementar `AppDbContext` com DbSets e Fluent API
-- [ ] Implementar repositórios
+- [ ] Implementar repositórios (se necessário)
 - [ ] Implementar services (`ChosenListService`, `ItemService`, `ChosenService`)
 - [ ] Testes de integração com SQLite real
 
@@ -257,7 +258,6 @@ ChosenList 1──* Chosen
 - [ ] `ItemController` (CRUD itens)
 - [ ] `ChosenController` (submeter/confirmar/deletar escolha)
 - [ ] Swagger/OpenAPI configurado
-- [ ] Limpar placeholder `Class1.cs` da Infrastructure
 
 ### Etapa 5 - Blazor Frontend
 - [ ] Configurar `Program.cs` do Web (HttpClient apontando para API)
