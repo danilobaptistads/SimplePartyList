@@ -12,6 +12,14 @@
 
 ---
 
+## Regras do Fluxo de Trabalho
+
+1. **Nunca commitar sem confirmação do usuário** — sempre perguntar antes de commitar.
+2. **Nunca alterar arquivos existentes sem confirmação** — toda modificação em arquivo existente deve ser aprovada antes.
+3. Após aprovação, executar a alteração e aguardar nova instrução.
+
+---
+
 ## Estrutura de Pastas
 
 ```
