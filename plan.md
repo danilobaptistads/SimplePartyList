@@ -247,10 +247,6 @@ Cada service segue o fluxo:
 
 #### 2A - ChosenListService
 - [x] Criar `IChosenListService.cs` (interface)
-- [ ] Criar `ChosenListServiceTests.cs` com testes:
-  - Criar lista → gera GUID + data de expiração correta
-  - Obter lista por link GUID
-  - Link expirado → bloqueia escolhas
 - [ ] *Aguardar revisão → criar `ChosenListService.cs`*
 
 #### 2B - ItemService
