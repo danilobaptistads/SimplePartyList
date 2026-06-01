@@ -207,12 +207,12 @@ ChosenList 1──* Chosen
 **Config (appsettings.json):**
 ```json
 "Jwt": {
-  "Key": "chave-super-segura-com-32-caracteres!",
   "Issuer": "SimplePartyList",
   "Audience": "SimplePartyList",
   "ExpireMinutes": 60
 }
 ```
+> A chave `Jwt:Key` é armazenada no **User Secrets** em desenvolvimento e via variável de ambiente `Jwt__Key` em produção.
 
 **Pacote NuGet:** `Microsoft.AspNetCore.Authentication.JwtBearer`
 
@@ -233,9 +233,10 @@ ChosenList 1──* Chosen
 - [x] Configurar connection string SQLite em `appsettings.json`
 - [x] Remover `Class1.cs` placeholder da Infrastructure
 - [x] Criar `DbInitializer` com seed automático do `SplAdmin` (user: `spladmin` / email: `spladmin@spl.com` / senha: `SplAdmin@123`)
-- [ ] Adicionar `Microsoft.AspNetCore.Authentication.JwtBearer` (pacote NuGet)
-- [ ] Configurar JWT no `appsettings.json` (Key, Issuer, Audience, ExpireMinutes)
-- [ ] Configurar `AddAuthentication().AddJwtBearer()` no `Program.cs` da API
+- [x] Adicionar `Microsoft.AspNetCore.Authentication.JwtBearer` (pacote NuGet)
+- [x] Configurar JWT no `appsettings.json` (Issuer, Audience, ExpireMinutes) + Key via User Secrets
+- [x] Configurar `AddAuthentication().AddJwtBearer()` no `Program.cs` da API
+- [x] Corrigir referências do `tests.csproj` (`..\..\src\` → `..\src\`)
 
 ### Etapa 2 - TDD (Testes dos Services) — Ciclo por Service
 
@@ -245,7 +246,7 @@ Cada service segue o fluxo:
 3. Após aprovação, criar a **implementação do Service** na Infrastructure
 
 #### 2A - ChosenListService
-- [ ] Criar `IChosenListService.cs` (interface)
+- [x] Criar `IChosenListService.cs` (interface)
 - [ ] Criar `ChosenListServiceTests.cs` com testes:
   - Criar lista → gera GUID + data de expiração correta
   - Obter lista por link GUID
