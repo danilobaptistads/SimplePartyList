@@ -278,11 +278,11 @@ Cada service segue o fluxo:
   - `SubmitAsync_ShouldThrow_WhenItemNotFound`
   - `DeleteAsync_ShouldRemoveChosen` / `ShouldThrow_WhenNotFound`
   - `GetByChosenListIdAsync_ShouldReturnChosens` / `Empty_WhenNoChosens`
-- [ ] *Aguardar revisão → criar `ChosenService.cs`*
+- [x] ~~*Aguardar revisão → criar `ChosenService.cs`*~~ ✅ implementado e merged
 
 ### Etapa 3 - Persistência
-- [ ] Implementar repositórios (se necessário)
-- [ ] Implementar services (`ChosenListService`, `ItemService`, `ChosenService`)
+- [x] Implementar repositórios (se necessário) — não necessário (EF Core direto)
+- [x] ~~Implementar services~~ ✅ (ChosenList, Item, Chosen — todos implementados)
 - [ ] Testes de integração com SQLite real
 
 ### Etapa 4 - API Controllers
