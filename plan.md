@@ -34,7 +34,7 @@ SimplePartyList/
 │   │   │   ├── ItemController.cs
 │   │   │   └── ChosenController.cs
 │   │   ├── Program.cs                    # configurado (DbContext, Identity, CORS)
-│   │   ├── appsettings.json              # connection string SQLite
+│   │   ├── appsettings.json              # config (connection string em User Secrets)
 │   │   ├── appsettings.Development.json
 │   │   ├── Properties/
 │   │   │   └── launchSettings.json
@@ -103,11 +103,12 @@ SimplePartyList/
 │
 └── tests/                                # xUnit Tests
     ├── allTests/                         # pasta que abriga os testes
-    │   ├── Services/                     # (planejado)
+    │   ├── Services/                     ✅
     │   │   ├── ChosenListServiceTests.cs
     │   │   ├── ItemServiceTests.cs
-    │   │   └── ChosenServiceTests.cs
-    │   └── Integration/                  # (planejado)
+    │   │   ├── ChosenServiceTests.cs
+    │   │   └── EventServiceTests.cs
+    │   └── Integration/                  ✅
     │       └── PersistenceTests.cs
     └── tests.csproj
 ```
@@ -284,16 +285,21 @@ Cada service segue o fluxo:
 #### 2D - EventService
 - [x] Criar `IEventService.cs` (interface) — `CreateAsync`, `GetByIdAsync`, `GetByAdminIdAsync`, `UpdateAsync`, `DeleteAsync`
 - [x] Criar `EventServiceTests.cs` com 8 testes (InMemory)
-- [x] ~~*Aguardar revisão → criar `EventService.cs`*~~ ✅ implementado
+- [x] ~~*Aguardar revisão → criar `EventService.cs`*~~ ✅ implementado e merged
+- [x] Merge `feature/eventservice` → `develop`
+- [x] Deletar branch `feature/eventservice`
 
 ### Etapa 3 - Persistência
 - [x] Implementar repositórios (se necessário) — não necessário (EF Core direto)
-- [x] ~~Implementar services~~ ✅ (ChosenList, Item, Chosen — todos implementados)
+- [x] ~~Implementar services~~ ✅ (ChosenList, Item, Chosen, Event — todos implementados)
 - [x] Migração SQLite → Supabase PostgreSQL
-- [x] Testes de integração (InMemory) — 6 testes em `PersistenceTests.cs`
+- [x] Testes de integração (InMemory) — 10 testes em `PersistenceTests.cs`
+- [x] Merge `feature/integration-tests` → `develop`
+- [x] Deletar branch `feature/integration-tests`
 
 ### Etapa 4 - API Controllers
 - [ ] `AuthController` (register/login Identity + gerar JWT)
+- [ ] `EventController` (CRUD evento + gerenciamento de datas)
 - [ ] `ChosenListController` (CRUD lista + geração link)
 - [ ] `ItemController` (CRUD itens)
 - [ ] `ChosenController` (submeter/confirmar/deletar escolha)
