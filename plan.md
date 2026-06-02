@@ -5,8 +5,8 @@
 - .NET 9
 - ASP.NET Core Web API
 - Blazor Server (Interactive Server)
-- Entity Framework Core
-- SQLite
+- Entity Framework Core + Npgsql (PostgreSQL)
+- Supabase (PostgreSQL hosted)
 - ASP.NET Core Identity + JWT Bearer
 - xUnit (TDD)
 
@@ -48,10 +48,11 @@ SimplePartyList/
 │   │   │   ├── ChosenList.cs
 │   │   │   ├── Item.cs
 │   │   │   └── Chosen.cs
-│   │   ├── Interfaces/                   # (planejado)
+│   │   ├── Interfaces/                   ✅
 │   │   │   ├── IChosenListService.cs
 │   │   │   ├── IItemService.cs
-│   │   │   └── IChosenService.cs
+│   │   │   ├── IChosenService.cs
+│   │   │   └── IEventService.cs
 │   │   ├── DTOs/                         ✅ LoginDto, RegisterDto
 │   │   │   ├── LoginDto.cs
 │   │   │   ├── RegisterDto.cs
@@ -61,12 +62,12 @@ SimplePartyList/
 │   ├── infrastructure/                   # EF Core, Repositories, Services
 │   │   ├── Data/
 │   │   │   ├── SimplePartyListContext.cs ✅
-│   │   │   ├── DbInitializer.cs          ✅ (seed SplAdmin)
-│   │   │   └── Database/                 ✅ (banco SQLite local)
-│   │   ├── Services/                     # (planejado)
+│   │   │   └── DbInitializer.cs          ✅ (seed SplAdmin + migrate)
+│   │   ├── Services/                     ✅
 │   │   │   ├── ChosenListService.cs
 │   │   │   ├── ItemService.cs
-│   │   │   └── ChosenService.cs
+│   │   │   ├── ChosenService.cs
+│   │   │   └── EventService.cs
 │   │   ├── Migrations/                   ✅ InitialCreate
 │   │   └── infrastructure.csproj
 │   │
@@ -114,7 +115,7 @@ SimplePartyList/
 ### Fluxo de Comunicação entre Projetos
 
 ```
-Web (Blazor Server) ──HTTP──> API ──DI──> Infrastructure (Services) ──EF──> SQLite
+Web (Blazor Server) ──HTTP──> API ──DI──> Infrastructure (Services) ──EF──> PostgreSQL (Supabase)
                                     Core (entities/interfaces/DTOs)
 ```
 
@@ -280,10 +281,16 @@ Cada service segue o fluxo:
   - `GetByChosenListIdAsync_ShouldReturnChosens` / `Empty_WhenNoChosens`
 - [x] ~~*Aguardar revisão → criar `ChosenService.cs`*~~ ✅ implementado e merged
 
+#### 2D - EventService
+- [x] Criar `IEventService.cs` (interface) — `CreateAsync`, `GetByIdAsync`, `GetByAdminIdAsync`, `UpdateAsync`, `DeleteAsync`
+- [x] Criar `EventServiceTests.cs` com 8 testes (InMemory)
+- [x] ~~*Aguardar revisão → criar `EventService.cs`*~~ ✅ implementado
+
 ### Etapa 3 - Persistência
 - [x] Implementar repositórios (se necessário) — não necessário (EF Core direto)
 - [x] ~~Implementar services~~ ✅ (ChosenList, Item, Chosen — todos implementados)
-- [ ] Testes de integração com SQLite real
+- [x] Migração SQLite → Supabase PostgreSQL
+- [x] Testes de integração (InMemory) — 6 testes em `PersistenceTests.cs`
 
 ### Etapa 4 - API Controllers
 - [ ] `AuthController` (register/login Identity + gerar JWT)

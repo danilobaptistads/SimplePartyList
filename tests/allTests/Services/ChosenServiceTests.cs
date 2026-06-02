@@ -82,7 +82,7 @@ public class ChosenServiceTests
         await context.SaveChangesAsync();
 
         var chosenService = new ChosenService(context);
-        await chosenService.DeleteAsync(chosen.ChosenId);
+        await chosenService.DeleteAsync(chosen);
 
         Assert.Null(await context.Chosens.FindAsync(chosen.ChosenId));
     }
@@ -94,7 +94,7 @@ public class ChosenServiceTests
         var chosenService = new ChosenService(context);
 
         await Assert.ThrowsAsync<KeyNotFoundException>(
-            () => chosenService.DeleteAsync(Guid.NewGuid()));
+            () => chosenService.DeleteAsync(new Chosen { ChosenId = Guid.NewGuid() }));
     }
 
     [Fact]

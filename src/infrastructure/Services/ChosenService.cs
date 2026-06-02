@@ -47,10 +47,10 @@ public class ChosenService : IChosenService
         return chosen;
     }
 
-    public async Task DeleteAsync(Guid chosenId)
+    public async Task DeleteAsync(Chosen chosenToDelete)
     {
-        var chosen = await _context.Chosens.FindAsync(chosenId)
-            ?? throw new KeyNotFoundException($"Chosen {chosenId} not found.");
+        var chosen = await _context.Chosens.FindAsync(chosenToDelete.ChosenId)
+            ?? throw new KeyNotFoundException($"Chosen {chosenToDelete.ChosenId} not found.");
 
         _context.Chosens.Remove(chosen);
         await _context.SaveChangesAsync();

@@ -55,6 +55,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IChosenListService, ChosenListService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IChosenService, ChosenService>();
+builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
