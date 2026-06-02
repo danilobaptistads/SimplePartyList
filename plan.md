@@ -267,16 +267,17 @@ Cada service segue o fluxo:
   - `UpdateAsync_ShouldPersistChanges` / `ShouldThrow_WhenNotFound`
   - `DeleteAsync_ShouldRemoveItem` / `ShouldThrow_WhenNotFound`
   - `GetByListUrlAsync_ShouldReturnItems` / `Empty_WhenNoItems`
-- [ ] *Aguardar revisão → criar `ItemService.cs`*
+- [x] ~~*Aguardar revisão → criar `ItemService.cs`*~~ ✅ implementado e merged
 
 #### 2C - ChosenService
-- [ ] Criar `IChosenService.cs` (interface)
-- [ ] Criar `ChosenServiceTests.cs` com testes:
-  - Submeter escolha (sem nome ainda)
-  - Confirmar escolha (associa `GuestName`)
-  - Bloquear escolha se cota estourada
-  - Bloquear escolha se lista expirada
-  - Deletar escolha (admin only) → libera cota
+- [x] Criar `IChosenService.cs` (interface) — `SubmitAsync`, `DeleteAsync`, `GetByChosenListIdAsync`
+- [x] Criar `ChosenServiceTests.cs` com 8 testes (InMemory):
+  - `SubmitAsync_ShouldCreateChosen`
+  - `SubmitAsync_ShouldThrow_WhenListExpired`
+  - `SubmitAsync_ShouldThrow_WhenQuotaExceeded`
+  - `SubmitAsync_ShouldThrow_WhenItemNotFound`
+  - `DeleteAsync_ShouldRemoveChosen` / `ShouldThrow_WhenNotFound`
+  - `GetByChosenListIdAsync_ShouldReturnChosens` / `Empty_WhenNoChosens`
 - [ ] *Aguardar revisão → criar `ChosenService.cs`*
 
 ### Etapa 3 - Persistência

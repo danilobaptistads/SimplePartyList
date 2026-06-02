@@ -51,7 +51,7 @@ public class ItemServiceTests
     public async Task SearchByNameAsync_ShouldReturnMatchingItems()
     {
         using var context = CreateContext();
-        var adminId = "admin-1";
+
         context.Items.AddRange(
             new Item { Name = "Cerveja Skol", MaxQuantity = 50, ChosenListId = Guid.NewGuid() },
             new Item { Name = "Cerveja Brahma", MaxQuantity = 30, ChosenListId = Guid.NewGuid() },
