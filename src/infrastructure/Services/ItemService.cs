@@ -71,4 +71,11 @@ public class ItemService : IItemService
 
         return chosenList?.Items.ToList() ?? [];
     }
+
+    public async Task<List<Item>> GetByChosenListIdAsync(Guid chosenListId)
+    {
+        return await _context.Items
+            .Where(i => i.ChosenListId == chosenListId)
+            .ToListAsync();
+    }
 }

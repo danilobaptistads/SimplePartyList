@@ -81,6 +81,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapEventEndpoints();
 app.MapChosenListEndpoints();
+app.MapItemEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {

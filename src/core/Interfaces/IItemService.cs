@@ -10,4 +10,5 @@ public interface IItemService
     Task<Item> UpdateAsync(Item itemToUpdate);
     Task DeleteAsync(Item itemToDelete);
     Task<List<Item>> GetByListUrlAsync(Guid listUrl);
+    Task<List<Item>> GetByChosenListIdAsync(Guid chosenListId);
 }
