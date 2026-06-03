@@ -398,7 +398,11 @@ Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
 - [x] **Popup de confirmação** (`PopupConfirmacao.razor`):
   - Exibe nome e itens selecionados
   - Botões "Confirmar" e "Editar"
-- [x] CSS customizado (cards bege com fitas, progresso, botão verde petróleo, hints)
+- [x] CSS customizado (cards bege com fitas, progresso, botão verde petróleo, hints, fitas decorativas)
+- [x] Fitas decorativas (washi tape): 5 classes CSS individuais, posicionamento absoluto, clip-path
+- [x] Pseudo-elementos cinzas removidos, padding dos cards aumentado
+- [x] Event header com nome e data do evento
+- [ ] **Dashboard Admin** (autenticado) — listar/criar/editar eventos, gerenciar itens, ver/deletar escolhas
 - [x] `ListPageTests` — 6 testes Moq do helper
 - [ ] **Dashboard Admin** (autenticado) — listar/criar/editar eventos, gerenciar itens, ver/deletar escolhas
 

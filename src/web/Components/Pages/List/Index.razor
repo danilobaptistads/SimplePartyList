@@ -10,12 +10,16 @@
 @if (_errorMessage is not null)
 {
     <div class="card-beige">
+        <div class="tape tape--coral-superior-esquerda"></div>
+        <div class="tape tape--verde-superior-direita"></div>
         <div class="alert alert-danger text-center mb-0">@_errorMessage</div>
     </div>
 }
 else if (_lista is null)
 {
     <div class="card-beige text-center">
+        <div class="tape tape--coral-superior-esquerda"></div>
+        <div class="tape tape--verde-superior-direita"></div>
         <div class="spinner-border text-primary" role="status"></div>
         <p class="mt-3 text-muted">Carregando lista...</p>
     </div>
@@ -23,6 +27,9 @@ else if (_lista is null)
 else if (_sucesso)
 {
     <div class="card-beige">
+        <div class="tape tape--coral-superior-esquerda-itens"></div>
+        <div class="tape tape--verde-superior-direita-itens"></div>
+        <div class="tape tape--verde-inferior-direita"></div>
         <h3 class="text-center mb-4" style="color: var(--color-primary);">Obrigado!</h3>
         <div class="text-center mb-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="var(--color-primary)" viewBox="0 0 16 16">
@@ -48,11 +55,21 @@ else
     if (_lista.IsExpired)
     {
         <div class="card-beige">
+            <div class="tape tape--coral-superior-esquerda-itens"></div>
+            <div class="tape tape--verde-superior-direita-itens"></div>
+            <div class="tape tape--verde-inferior-direita"></div>
             <div class="alert alert-warning text-center mb-0">Esta lista expirou. Visualização apenas.</div>
         </div>
     }
 
+    <div class="event-header">
+        <h2 class="event-title">@_lista.EventName</h2>
+        <p class="event-date">@_lista.EventDate.ToString("dd 'de' MMMM 'de' yyyy")</p>
+    </div>
+
     <div class="card-beige">
+        <div class="tape tape--coral-superior-esquerda"></div>
+        <div class="tape tape--verde-superior-direita"></div>
         <h3 class="card-title-step">PASSO 1: IDENTIFIQUE-SE</h3>
         <input class="form-control form-control-lg input-custom"
                value="@_nomeConvidado"
@@ -62,6 +79,9 @@ else
     </div>
 
     <div class="card-beige">
+        <div class="tape tape--coral-superior-esquerda-itens"></div>
+        <div class="tape tape--verde-superior-direita-itens"></div>
+        <div class="tape tape--verde-inferior-direita"></div>
         <h3 class="card-title-step">ITENS DISPONÍVEIS PARA ESCOLHA</h3>
 
         <div class="items-list">
