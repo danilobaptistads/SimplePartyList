@@ -39,6 +39,14 @@ public class ChosenListService : IChosenListService
         return await _context.ChosenLists.FirstOrDefaultAsync(cl => cl.ListUrl == listUrl);
     }
 
+    public async Task<ChosenList?> GetByListUrlWithItemsAsync(Guid listUrl)
+    {
+        return await _context.ChosenLists
+            .Include(cl => cl.Items)
+            .Include(cl => cl.Chosens)
+            .FirstOrDefaultAsync(cl => cl.ListUrl == listUrl);
+    }
+
     public async Task<List<ChosenList>> GetByAdminIdAsync(string adminId)
     {
         return await _context.Events

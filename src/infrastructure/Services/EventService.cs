@@ -32,6 +32,11 @@ public class EventService : IEventService
         return await _context.Events.FindAsync(eventId);
     }
 
+    public async Task<Event?> GetByChosenListIdAsync(Guid chosenListId)
+    {
+        return await _context.Events.FirstOrDefaultAsync(e => e.ChosenListId == chosenListId);
+    }
+
     public async Task<List<Event>> GetByAdminIdAsync(string adminId)
     {
         return await _context.Events

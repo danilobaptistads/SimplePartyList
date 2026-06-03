@@ -80,6 +80,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapEventEndpoints();
+app.MapChosenListEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
