@@ -30,6 +30,7 @@
     <ProjectReference Include="..\src\api\api.csproj" />
     <ProjectReference Include="..\src\core\core.csproj" />
     <ProjectReference Include="..\src\infrastructure\infrastructure.csproj" />
+    <ProjectReference Include="..\src\web\web.csproj" />
   </ItemGroup>
 
 </Project>

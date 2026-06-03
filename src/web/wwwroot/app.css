@@ -58,3 +58,320 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+:root {
+    --color-primary: #1a7a6a;
+    --color-primary-dark: #145c4f;
+    --color-beige: #f5f0e8;
+    --color-beige-dark: #e8e0d0;
+    --color-white: #ffffff;
+    --color-text: #333333;
+    --color-text-light: #666666;
+    --color-progress-bg: #ddd9cf;
+    --color-progress-fill: #1a7a6a;
+    --radius: 14px;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+body {
+    background: #f0ece3;
+    color: var(--color-text);
+}
+
+/* Top Bar */
+.top-bar {
+    background: var(--color-primary);
+    color: white;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.top-bar .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.top-bar .admin-link {
+    color: white;
+    text-decoration: none;
+    font-size: 0.8rem;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+}
+
+.top-bar .admin-link:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.1);
+}
+
+/* Page Wrapper */
+.page-wrapper {
+    max-width: 424px;
+    margin: 20px auto;
+    padding: 0 12px;
+}
+
+/* Beige Card */
+.card-beige {
+    background: var(--color-beige);
+    border-radius: var(--radius);
+    padding: 28px 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.card-beige::before,
+.card-beige::after {
+    content: '';
+    position: absolute;
+    width: 36px;
+    height: 10px;
+    background: rgba(190, 175, 145, 0.35);
+    border-radius: 2px;
+}
+
+.card-beige::before {
+    top: -5px;
+    left: 14px;
+    transform: rotate(-10deg);
+}
+
+.card-beige::after {
+    bottom: -5px;
+    right: 14px;
+    transform: rotate(8deg);
+}
+
+.card-title-step {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+/* Custom Input */
+.input-custom {
+    border-radius: 10px;
+    border: 2px solid var(--color-beige-dark);
+    background: var(--color-white);
+    padding: 14px 18px;
+    font-size: 1rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.input-custom:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(26,122,106,0.15);
+}
+
+/* Items List */
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-card {
+    background: var(--color-white);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.item-card:hover {
+    border-color: var(--color-beige-dark);
+    box-shadow: var(--shadow-sm);
+}
+
+.item-card.selected {
+    border-color: var(--color-primary);
+    background: #f0faf8;
+}
+
+.item-card.disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.item-checkbox {
+    padding-top: 2px;
+}
+
+.item-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.item-quota {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+}
+
+/* Progress Bar */
+.progress-bar-wrapper {
+    height: 6px;
+    background: var(--color-progress-bg);
+    border-radius: 3px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--color-progress-fill);
+    border-radius: 3px;
+    transition: width 0.3s;
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26,122,106,0.3);
+}
+
+.btn-submit:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Button Custom (outline variant) */
+.btn-custom {
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-weight: 600;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.modal-card {
+    background: var(--color-beige);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.modal-card::before,
+.modal-card::after {
+    content: '';
+    position: absolute;
+    width: 36px;
+    height: 10px;
+    background: rgba(190, 175, 145, 0.35);
+    border-radius: 2px;
+}
+
+.modal-card::before {
+    top: -5px;
+    left: 14px;
+    transform: rotate(-10deg);
+}
+
+.modal-card::after {
+    bottom: -5px;
+    right: 14px;
+    transform: rotate(8deg);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-actions .btn-submit {
+    width: auto;
+    margin-top: 0;
+    padding: 10px 28px;
+}
+
+/* Badge */
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* Loading spinner */
+.spinner-border.text-primary {
+    color: var(--color-primary) !important;
+}
+
+/* Validation hint */
+.validation-hint {
+    color: #c0392b;
+    font-size: 0.8rem;
+    margin-top: 6px;
+    margin-bottom: 0;
+}

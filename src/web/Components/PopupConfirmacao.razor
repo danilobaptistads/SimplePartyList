@@ -1,0 +1,30 @@
+<div class="modal-overlay">
+    <div class="modal-card">
+        <h3 class="text-center mb-3" style="color: var(--color-primary);">Confirmar escolha</h3>
+
+        <div class="mb-3">
+            <p><strong>Convidado:</strong> @GuestName</p>
+            <p><strong>Itens selecionados:</strong></p>
+            <ul class="list-unstyled">
+                @foreach (var item in SelectedItems)
+                {
+                    <li class="mb-1">
+                        <span class="badge" style="background: var(--color-primary);">@item</span>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-outline-secondary btn-custom" @onclick="() => OnEdit.InvokeAsync()">Editar</button>
+            <button class="btn-submit" @onclick="() => OnConfirm.InvokeAsync()">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string GuestName { get; set; } = string.Empty;
+    [Parameter] public List<string> SelectedItems { get; set; } = [];
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnEdit { get; set; }
+}

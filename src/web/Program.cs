@@ -1,19 +1,22 @@
 using SimplePartyList.Web.Components;
+using SimplePartyList.Web.Components.Pages.List;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddHttpClient<ListPageHelper>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5232");
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
 }
-
 
 app.UseAntiforgery();
 

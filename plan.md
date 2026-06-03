@@ -8,7 +8,7 @@
 - Entity Framework Core + Npgsql (PostgreSQL)
 - Supabase (PostgreSQL hosted)
 - ASP.NET Core Identity + JWT Bearer
-- xUnit (TDD)
+- xUnit (TDD) — **86 testes** (39 Services + 5 Auth + 10 Event + 5 ChosenList + 11 Item + 8 Chosen + 6 Blazor helper + 2 integração)
 
 ---
 
@@ -34,7 +34,7 @@ SimplePartyList/
 │   │   │   ├── EventEndpoints.cs
 │   │   │   ├── ChosenListEndpoints.cs
 │   │   │   ├── ItemEndpoints.cs          ✅
-│   │   │   └── ChosenEndpoints.cs        # (planejado)
+│   │   │   └── ChosenEndpoints.cs        ✅
 │   │   ├── Program.cs                    # configurado (DbContext, Identity, CORS)
 │   │   ├── ProgramPublic.cs              # classe parcial para testes
 │   │   ├── appsettings.json              # config (connection string em User Secrets)
@@ -60,7 +60,16 @@ SimplePartyList/
 │   │   ├── DTOs/                         ✅ LoginDto, RegisterDto, CreateEventDto,
 │   │   │   ├── LoginDto.cs               │     UpdateEventDto, AdminEventResponseDto,
 │   │   │   ├── RegisterDto.cs            │     AuthResponseDto, PublicListResponseDto,
-│   │   │   └── ...                       │     ItemDto
+│   │   │   ├── CreateEventDto.cs         │     ItemDto, CreateItemDto, UpdateItemDto,
+│   │   │   ├── UpdateEventDto.cs         │     ChosenResponseDto, SubmitChosenDto
+│   │   │   ├── AuthResponseDto.cs
+│   │   │   ├── AdminEventResponseDto.cs
+│   │   │   ├── PublicListResponseDto.cs
+│   │   │   ├── ItemDto.cs
+│   │   │   ├── CreateItemDto.cs
+│   │   │   ├── UpdateItemDto.cs
+│   │   │   ├── ChosenResponseDto.cs
+│   │   │   └── SubmitChosenDto.cs
 │   │   └── core.csproj
 │   │
 │   ├── infrastructure/                   # EF Core, Repositories, Services
@@ -82,18 +91,19 @@ SimplePartyList/
 │       │   │   ├── Counter.razor
 │       │   │   ├── Weather.razor
 │       │   │   ├── Error.razor
-│       │   │   └── List/                 # (planejado)
+│       │   │   └── List/                 ✅
 │       │   │       ├── Index.razor
-│       │   │       └── Index.razor.cs
+│       │   │       └── ListPageHelper.cs
 │       │   ├── Layout/
 │       │   │   ├── MainLayout.razor
 │       │   │   ├── MainLayout.razor.css
 │       │   │   ├── NavMenu.razor
-│       │   │   └── NavMenu.razor.css
+│       │   │   ├── NavMenu.razor.css
+│       │   │   └── PublicLayout.razor    ✅
 │       │   ├── App.razor
 │       │   ├── Routes.razor
 │       │   ├── _Imports.razor
-│       │   └── PopupConfirmacao.razor    # (planejado)
+│       │   └── PopupConfirmacao.razor    ✅
 │       ├── wwwroot/
 │       │   ├── app.css
 │       │   ├── favicon.png
@@ -116,7 +126,11 @@ SimplePartyList/
     │   │   └── AuthControllerTests.cs
     │   ├── Endpoints/                    ✅
     │   │   ├── EventEndpointTests.cs
-    │   │   └── ChosenListEndpointTests.cs
+    │   │   ├── ChosenListEndpointTests.cs
+    │   │   ├── ItemEndpointTests.cs
+    │   │   └── ChosenEndpointTests.cs
+    │   ├── Pages/                       ✅
+    │   │   └── ListPageTests.cs
     │   └── Integration/                  ✅
     │       └── PersistenceTests.cs
     └── tests.csproj
@@ -203,7 +217,8 @@ ChosenList 1──* Chosen
 - Event POST — usa `adminId` do token (recurso criado já pertence ao admin) ✅
 - Item POST/PUT/DELETE (4D) — verificar ownership via Event → AdminId
 - ChosenListEndpoints — públicos (guest), sem auth ✅
-- Chosen DELETE (4E) — verificar ownership via Event → AdminId
+- Chosen GET/DELETE (4E) — GET verifica ownership via Event → AdminId; DELETE no admin (POST guest)
+- Item GET/DELETE (4D) — verifica ownership via Event → AdminId; DELETE 409 se item tem Chosens
 
 ## Regras de Negócio
 
@@ -229,7 +244,7 @@ ChosenList 1──* Chosen
 - Admin registra/login via `AuthController`
 - API retorna um **JWT token** com claims (UserId, Email, Name)
 - Token expira conforme `Jwt.ExpireMinutes` (ex: 60 min)
-- `ChosenListController`, `ItemController`, `ChosenController` exigem `[Authorize]`
+- `EventEndpoints`, `ItemEndpoints`, `ChosenEndpoints` exigem `[Authorize]`
 - Rota pública: apenas `POST /api/auth/login` e `POST /api/auth/register`
 - Swagger configurado com `AddSecurityDefinition` (Bearer) para testes
 
@@ -349,40 +364,50 @@ Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
 - [x] Merge `feature/eventendpoints` → `develop` (4B + 4C juntos)
 - [x] Deletar branch `feature/eventendpoints`
 
-#### 4D - ItemEndpoints (planejado)
-- [ ] `CreateItemDto`, `UpdateItemDto`, `ItemResponseDto`
-- [ ] `ItemEndpoints.cs` — POST, GET (lista), GET (id), PUT, DELETE
-- [ ] `ItemEndpointTests` — testes (WebApplicationFactory)
+#### 4D - ItemEndpoints
+- [x] `CreateItemDto`, `UpdateItemDto`
+- [x] `ItemEndpoints.cs` — POST, GET (lista), GET (id), PUT, DELETE
+- [x] Ownership checks em POST/PUT/DELETE (Item → ChosenList → Event → AdminId)
+- [x] DELETE 409 Conflict se item tem Chosens vinculados
+- [x] `IItemService.GetByChosenListIdAsync`
+- [x] `ItemEndpointTests` — 11 testes (WebApplicationFactory)
+- [x] Merge `feature/itemendpoints` → `develop`
+- [x] Deletar branch `feature/itemendpoints`
 
-#### 4E - ChosenEndpoints (planejado)
-- [ ] `SubmitChosenDto`, `ChosenResponseDto`
-- [ ] `ChosenEndpoints.cs` — POST, DELETE, GET (lista)
-- [ ] `ChosenEndpointTests` — testes (WebApplicationFactory)
+#### 4E - ChosenEndpoints
+- [x] `SubmitChosenDto`, `ChosenResponseDto`
+- [x] `ChosenEndpoints.cs` — GET /api/events/{eventId}/chosens (admin, ownership), POST /api/lists/{listUrl}/chosens (guest), DELETE /api/chosens/{id} (admin, ownership)
+- [x] `IChosenService.GetByIdAsync`
+- [x] `ChosenEndpointTests` — 8 testes (WebApplicationFactory)
+- [x] Merge `feature/chosenendpoints` → `develop`
+- [x] Deletar branch `feature/chosenendpoints`
 
 #### Swagger
-- [ ] Confirmar funcionamento — já configurado via `AddOpenApi()` + `MapOpenApi()`
+- [x] Configurado via `AddOpenApi()` + `MapOpenApi()`
 
-### Etapa 5 - Blazor Frontend
-- [ ] Configurar `Program.cs` do Web (HttpClient apontando para API)
-- [ ] **Dashboard Admin** (autenticado via Identity):
-  - Criar/editar lista
-  - Gerenciar itens (adicionar, editar, deletar)
-  - Visualizar escolhas
-  - Deletar escolha
-- [ ] **Página pública** `/list/{guid}`:
-  - Exibir itens disponíveis com cotas
-  - Usuário marca itens desejados
-  - Botão "Submeter"
-- [ ] **Popup de confirmação** (2 etapas):
-  - Etapa 1: input nome + "Prosseguir"
-  - Etapa 2: confirmação com nome/itens + "Confirmar" / "Editar"
-  - Confirmar → persiste e exibe nome na lista
+### Etapa 5 - Blazor Frontend (Página Pública)
+- [x] Configurar `Program.cs` do Web (HttpClient apontando para API)
+- [x] `ListPageHelper.cs` — 3 métodos testáveis: `CarregarListaAsync`, `VerificarExpiracaoAsync`, `SubmeterEscolhaAsync`
+- [x] `PublicLayout.razor` — header verde + body sem sidebar
+- [x] **Página pública** `/list/{guid}`:
+  - Passo 1: input nome completo
+  - Passo 2: cards de itens com checkbox + barra de progresso de cotas
+  - Botão "Submeter" com loading spinner
+  - Sucesso: nome convidado + itens + botão voltar
+  - Validação visual: mensagens abaixo do botão (só após interagir)
+- [x] **Popup de confirmação** (`PopupConfirmacao.razor`):
+  - Exibe nome e itens selecionados
+  - Botões "Confirmar" e "Editar"
+- [x] CSS customizado (cards bege com fitas, progresso, botão verde petróleo, hints)
+- [x] `ListPageTests` — 6 testes Moq do helper
+- [ ] **Dashboard Admin** (autenticado) — listar/criar/editar eventos, gerenciar itens, ver/deletar escolhas
 
 ### Etapa 6 - Expiração + Validações
-- [ ] Verificar expiração ao acessar lista
-- [ ] Bloquear submissão se expirado
-- [ ] Validações de formulário (nome obrigatório, etc.)
-- [ ] Feedback visual para o usuário (loading, erros, sucesso)
+- [x] Verificar expiração ao acessar lista (API + frontend)
+- [x] Bloquear submissão se expirado (desabilitar inputs + botão)
+- [x] Validações de formulário (nome + itens obrigatórios, só após interagir)
+- [x] Feedback visual para o usuário (loading, erros, sucesso, spinner)
+- [ ] Validação server-side no submit (se expirou entre abrir e submeter)
 
 ### Etapa 7 - Ajustes Finais
 - [ ] UI responsiva (CSS básico ou Bootstrap)
