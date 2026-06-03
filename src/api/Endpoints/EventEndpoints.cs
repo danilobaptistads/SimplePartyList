@@ -51,10 +51,14 @@ public static class EventEndpoints
             Guid id,
             [FromBody] UpdateEventDto dto,
             IEventService eventService,
+            ClaimsPrincipal user,
             SimplePartyListContext dbContext) =>
         {
             var ev = await eventService.GetByIdAsync(id);
             if (ev is null) return Results.NotFound();
+
+            var adminId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (ev.AdminId != adminId) return Results.Forbid();
 
             ev.Name = dto.Name;
             ev.Date = dto.Date;
@@ -65,10 +69,14 @@ public static class EventEndpoints
 
         group.MapDelete("/{id:guid}", async (
             Guid id,
-            IEventService eventService) =>
+            IEventService eventService,
+            ClaimsPrincipal user) =>
         {
             var ev = await eventService.GetByIdAsync(id);
             if (ev is null) return Results.NotFound();
+
+            var adminId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (ev.AdminId != adminId) return Results.Forbid();
 
             await eventService.DeleteAsync(ev);
             return Results.NoContent();

@@ -173,6 +173,45 @@ public class EventEndpointTests : IDisposable
     }
 
     [Fact]
+    public async Task PutEvent_ShouldReturn403_WhenNotOwner()
+    {
+        var client = _factory.CreateClient();
+        var tokenA = await GetAdminTokenAsync(client);
+        var authClientA = CreateClientWithToken(tokenA);
+
+        var postResponse = await authClientA.PostAsJsonAsync("/api/events", new CreateEventDto
+        {
+            Name = "Evento Alheio",
+            Date = DateTime.UtcNow
+        });
+        var created = await postResponse.Content.ReadFromJsonAsync<AdminEventResponseDto>();
+
+        var emailB = $"other-{Guid.NewGuid()}@test.com";
+        await client.PostAsJsonAsync("/api/auth/register", new RegisterDto
+        {
+            Name = "Outro Admin",
+            Email = emailB,
+            Password = "Test@123"
+        });
+        var loginB = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
+        {
+            Email = emailB,
+            Password = "Test@123"
+        });
+        var authB = await loginB.Content.ReadFromJsonAsync<AuthResponseDto>();
+        var authClientB = CreateClientWithToken(authB!.Token);
+
+        var updateDto = new UpdateEventDto
+        {
+            Name = "Hackeado",
+            Date = DateTime.UtcNow
+        };
+        var response = await authClientB.PutAsJsonAsync($"/api/events/{created!.EventId}", updateDto);
+
+        Assert.Equal(403, (int)response.StatusCode);
+    }
+
+    [Fact]
     public async Task DeleteEvent_ShouldReturn204_WhenDeleted()
     {
         var client = _factory.CreateClient();
@@ -189,6 +228,40 @@ public class EventEndpointTests : IDisposable
         var response = await authClient.DeleteAsync($"/api/events/{created!.EventId}");
 
         Assert.Equal(204, (int)response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteEvent_ShouldReturn403_WhenNotOwner()
+    {
+        var client = _factory.CreateClient();
+        var tokenA = await GetAdminTokenAsync(client);
+        var authClientA = CreateClientWithToken(tokenA);
+
+        var postResponse = await authClientA.PostAsJsonAsync("/api/events", new CreateEventDto
+        {
+            Name = "Evento Alheio",
+            Date = DateTime.UtcNow
+        });
+        var created = await postResponse.Content.ReadFromJsonAsync<AdminEventResponseDto>();
+
+        var emailB = $"other-{Guid.NewGuid()}@test.com";
+        await client.PostAsJsonAsync("/api/auth/register", new RegisterDto
+        {
+            Name = "Outro Admin",
+            Email = emailB,
+            Password = "Test@123"
+        });
+        var loginB = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
+        {
+            Email = emailB,
+            Password = "Test@123"
+        });
+        var authB = await loginB.Content.ReadFromJsonAsync<AuthResponseDto>();
+        var authClientB = CreateClientWithToken(authB!.Token);
+
+        var response = await authClientB.DeleteAsync($"/api/events/{created!.EventId}");
+
+        Assert.Equal(403, (int)response.StatusCode);
     }
 
     [Fact]

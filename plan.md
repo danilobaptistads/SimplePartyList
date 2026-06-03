@@ -32,7 +32,7 @@ SimplePartyList/
 │   │   │   └── AuthController.cs
 │   │   ├── Endpoints/                    # Minimal API
 │   │   │   ├── EventEndpoints.cs
-│   │   │   ├── ChosenListEndpoints.cs    # (planejado)
+│   │   │   ├── ChosenListEndpoints.cs
 │   │   │   ├── ItemEndpoints.cs          # (planejado)
 │   │   │   └── ChosenEndpoints.cs        # (planejado)
 │   │   ├── Program.cs                    # configurado (DbContext, Identity, CORS)
@@ -57,10 +57,10 @@ SimplePartyList/
 │   │   │   ├── IItemService.cs
 │   │   │   ├── IChosenService.cs
 │   │   │   └── IEventService.cs
-│   │   ├── DTOs/                         ✅ LoginDto, RegisterDto
-│   │   │   ├── LoginDto.cs
-│   │   │   ├── RegisterDto.cs
-│   │   │   └── ... (itens, escolhas)
+│   │   ├── DTOs/                         ✅ LoginDto, RegisterDto, CreateEventDto,
+│   │   │   ├── LoginDto.cs               │     UpdateEventDto, AdminEventResponseDto,
+│   │   │   ├── RegisterDto.cs            │     AuthResponseDto, PublicListResponseDto,
+│   │   │   └── ...                       │     ItemDto
 │   │   └── core.csproj
 │   │
 │   ├── infrastructure/                   # EF Core, Repositories, Services
@@ -115,7 +115,8 @@ SimplePartyList/
     │   ├── Controllers/                  ✅
     │   │   └── AuthControllerTests.cs
     │   ├── Endpoints/                    ✅
-    │   │   └── EventEndpointTests.cs
+    │   │   ├── EventEndpointTests.cs
+    │   │   └── ChosenListEndpointTests.cs
     │   └── Integration/                  ✅
     │       └── PersistenceTests.cs
     └── tests.csproj
@@ -193,6 +194,16 @@ ChosenList 1──* Chosen
 ```
 
 ---
+
+## Segurança (Ownership)
+
+> **Regra**: Todo endpoint admin (PUT/DELETE/POST de recursos) deve verificar se o recurso pertence ao `AdminId` do token JWT. Caso contrário, retorna `403 Forbid`.
+
+- Event PUT/DELETE — verifica `ev.AdminId == adminId` ✅
+- Event POST — usa `adminId` do token (recurso criado já pertence ao admin) ✅
+- Item POST/PUT/DELETE (4D) — verificar ownership via Event → AdminId
+- ChosenListEndpoints — públicos (guest), sem auth ✅
+- Chosen DELETE (4E) — verificar ownership via Event → AdminId
 
 ## Regras de Negócio
 
@@ -323,17 +334,20 @@ Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
 #### 4B - EventEndpoints (Minimal API)
 - [x] `CreateEventDto`, `UpdateEventDto`, `AdminEventResponseDto`
 - [x] `EventEndpoints.cs` — POST, GET (lista), GET (id), PUT, DELETE
-- [x] `EventEndpointTests` — 8 testes (WebApplicationFactory)
+- [x] Ownership check: PUT/DELETE verificam `ev.AdminId == adminId` (403 se não dono)
+- [x] `EventEndpointTests` — 10 testes (WebApplicationFactory)
 - [x] `Program.cs` — `MapEventEndpoints()`, `if Testing` para InMemory
 - [x] `DbInitializer.cs` — `IsRelational()` check
 - [x] `api.csproj` — `InMemory` package, `ProgramPublic.cs`, `AssemblyInfo.cs`
 - [x] `tests.csproj` — `FrameworkReference`, `api.csproj`, `Mvc.Testing`
 
-#### 4C - ChosenListEndpoints (planejado)
-- [ ] `PublicListResponseDto` (guest)
-- [ ] `ItemDto` (guest: ItemId, Name, MaxQuantity, ChosenCount)
-- [ ] `ChosenListEndpoints.cs` — `GET /api/lists/{listUrl}`, `GET /api/lists/{listUrl}/expired`
-- [ ] `ChosenListEndpointTests` — testes (WebApplicationFactory)
+#### 4C - ChosenListEndpoints (Minimal API, público)
+- [x] `PublicListResponseDto` (guest)
+- [x] `ItemDto` (guest: ItemId, Name, MaxQuantity, ChosenCount)
+- [x] `ChosenListEndpoints.cs` — `GET /api/lists/{listUrl}`, `GET /api/lists/{listUrl}/expired`
+- [x] `ChosenListEndpointTests` — 5 testes (WebApplicationFactory)
+- [x] Merge `feature/eventendpoints` → `develop` (4B + 4C juntos)
+- [x] Deletar branch `feature/eventendpoints`
 
 #### 4D - ItemEndpoints (planejado)
 - [ ] `CreateItemDto`, `UpdateItemDto`, `ItemResponseDto`
