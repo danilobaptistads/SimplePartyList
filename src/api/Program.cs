@@ -82,6 +82,7 @@ app.MapControllers();
 app.MapEventEndpoints();
 app.MapChosenListEndpoints();
 app.MapItemEndpoints();
+app.MapChosenEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {

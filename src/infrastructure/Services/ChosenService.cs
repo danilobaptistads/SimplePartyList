@@ -47,6 +47,11 @@ public class ChosenService : IChosenService
         return chosen;
     }
 
+    public async Task<Chosen?> GetByIdAsync(Guid chosenId)
+    {
+        return await _context.Chosens.FindAsync(chosenId);
+    }
+
     public async Task DeleteAsync(Chosen chosenToDelete)
     {
         var chosen = await _context.Chosens.FindAsync(chosenToDelete.ChosenId)

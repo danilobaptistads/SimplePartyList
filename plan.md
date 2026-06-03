@@ -1,4 +1,4 @@
-# SimplePartyList - Plano de Desenvolvimento
+﻿# SimplePartyList - Plano de Desenvolvimento
 
 ## Tecnologias
 
@@ -33,7 +33,7 @@ SimplePartyList/
 │   │   ├── Endpoints/                    # Minimal API
 │   │   │   ├── EventEndpoints.cs
 │   │   │   ├── ChosenListEndpoints.cs
-│   │   │   ├── ItemEndpoints.cs          # (planejado)
+│   │   │   ├── ItemEndpoints.cs          ✅
 │   │   │   └── ChosenEndpoints.cs        # (planejado)
 │   │   ├── Program.cs                    # configurado (DbContext, Identity, CORS)
 │   │   ├── ProgramPublic.cs              # classe parcial para testes
