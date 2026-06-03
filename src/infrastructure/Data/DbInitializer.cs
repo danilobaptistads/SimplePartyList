@@ -9,7 +9,8 @@ public static class DbInitializer
 {
     public static async Task SeedAsync(SimplePartyListContext context, IServiceProvider sp)
     {
-        await context.Database.MigrateAsync();
+        if (context.Database.IsRelational())
+            await context.Database.MigrateAsync();
 
         var userManager = sp.GetRequiredService<UserManager<Admin>>();
         if (await userManager.FindByEmailAsync("spladmin@spl.com") is null)

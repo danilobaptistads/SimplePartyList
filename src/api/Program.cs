@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SimplePartyList.API.Endpoints;
 using SimplePartyList.Core.Entities;
 using SimplePartyList.Core.Interfaces;
 using SimplePartyList.Infrastructure.Data;
@@ -10,8 +11,16 @@ using SimplePartyList.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<SimplePartyListContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<SimplePartyListContext>(options =>
+        options.UseInMemoryDatabase("TestDb" + Guid.NewGuid()));
+}
+else
+{
+    builder.Services.AddDbContext<SimplePartyListContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 builder.Services.AddIdentity<Admin, IdentityRole>()
     .AddEntityFrameworkStores<SimplePartyListContext>()
@@ -70,6 +79,7 @@ app.UseCors("AllowWeb");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapEventEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {

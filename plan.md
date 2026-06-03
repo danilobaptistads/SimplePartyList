@@ -28,16 +28,20 @@ SimplePartyList/
 │
 ├── src/
 │   ├── api/                              # ASP.NET Core Web API
-│   │   ├── Controllers/                  # (planejado)
-│   │   │   ├── AuthController.cs
-│   │   │   ├── ChosenListController.cs
-│   │   │   ├── ItemController.cs
-│   │   │   └── ChosenController.cs
+│   │   ├── Controllers/                  ✅ AuthController (único)
+│   │   │   └── AuthController.cs
+│   │   ├── Endpoints/                    # Minimal API
+│   │   │   ├── EventEndpoints.cs
+│   │   │   ├── ChosenListEndpoints.cs    # (planejado)
+│   │   │   ├── ItemEndpoints.cs          # (planejado)
+│   │   │   └── ChosenEndpoints.cs        # (planejado)
 │   │   ├── Program.cs                    # configurado (DbContext, Identity, CORS)
+│   │   ├── ProgramPublic.cs              # classe parcial para testes
 │   │   ├── appsettings.json              # config (connection string em User Secrets)
 │   │   ├── appsettings.Development.json
 │   │   ├── Properties/
-│   │   │   └── launchSettings.json
+│   │   │   ├── launchSettings.json
+│   │   │   └── AssemblyInfo.cs           # InternalsVisibleTo para testes
 │   │   ├── SimplePartyList.API.http
 │   │   └── api.csproj
 │   │
@@ -108,6 +112,10 @@ SimplePartyList/
     │   │   ├── ItemServiceTests.cs
     │   │   ├── ChosenServiceTests.cs
     │   │   └── EventServiceTests.cs
+    │   ├── Controllers/                  ✅
+    │   │   └── AuthControllerTests.cs
+    │   ├── Endpoints/                    ✅
+    │   │   └── EventEndpointTests.cs
     │   └── Integration/                  ✅
     │       └── PersistenceTests.cs
     └── tests.csproj
@@ -297,13 +305,48 @@ Cada service segue o fluxo:
 - [x] Merge `feature/integration-tests` → `develop`
 - [x] Deletar branch `feature/integration-tests`
 
-### Etapa 4 - API Controllers
-- [ ] `AuthController` (register/login Identity + gerar JWT)
-- [ ] `EventController` (CRUD evento + gerenciamento de datas)
-- [ ] `ChosenListController` (CRUD lista + geração link)
-- [ ] `ItemController` (CRUD itens)
-- [ ] `ChosenController` (submeter/confirmar/deletar escolha)
-- [ ] Swagger/OpenAPI configurado
+### Etapa 4 - API Endpoints (Minimal API)
+
+Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
+
+> **AuthController** mantido como controller-based. **4B-4E** usarão Minimal API puro via `src/api/Endpoints/`.
+>
+> **Separação Guest vs Admin via DTOs** — o modelo (`ChosenList`) é único. A diferença fica nos DTOs de resposta:
+> - **Guest** (`GET /api/lists/{listUrl}`) → `PublicListResponseDto` (Items + quantidade disponível, nome/data do Event). Sem Chosens, sem Expire.
+> - **Admin** (`GET /api/events/{id}`) → `AdminEventResponseDto` (Chosens, ChosenListId, dados do Event).
+
+#### 4A - AuthController (controller-based)
+- [x] `AuthResponseDto` — `Token` (string), `Expire` (DateTime)
+- [x] `AuthController` — `POST /api/auth/register`, `POST /api/auth/login`
+- [x] `AuthControllerTests` — 5 testes (Moq)
+
+#### 4B - EventEndpoints (Minimal API)
+- [x] `CreateEventDto`, `UpdateEventDto`, `AdminEventResponseDto`
+- [x] `EventEndpoints.cs` — POST, GET (lista), GET (id), PUT, DELETE
+- [x] `EventEndpointTests` — 8 testes (WebApplicationFactory)
+- [x] `Program.cs` — `MapEventEndpoints()`, `if Testing` para InMemory
+- [x] `DbInitializer.cs` — `IsRelational()` check
+- [x] `api.csproj` — `InMemory` package, `ProgramPublic.cs`, `AssemblyInfo.cs`
+- [x] `tests.csproj` — `FrameworkReference`, `api.csproj`, `Mvc.Testing`
+
+#### 4C - ChosenListEndpoints (planejado)
+- [ ] `PublicListResponseDto` (guest)
+- [ ] `ItemDto` (guest: ItemId, Name, MaxQuantity, ChosenCount)
+- [ ] `ChosenListEndpoints.cs` — `GET /api/lists/{listUrl}`, `GET /api/lists/{listUrl}/expired`
+- [ ] `ChosenListEndpointTests` — testes (WebApplicationFactory)
+
+#### 4D - ItemEndpoints (planejado)
+- [ ] `CreateItemDto`, `UpdateItemDto`, `ItemResponseDto`
+- [ ] `ItemEndpoints.cs` — POST, GET (lista), GET (id), PUT, DELETE
+- [ ] `ItemEndpointTests` — testes (WebApplicationFactory)
+
+#### 4E - ChosenEndpoints (planejado)
+- [ ] `SubmitChosenDto`, `ChosenResponseDto`
+- [ ] `ChosenEndpoints.cs` — POST, DELETE, GET (lista)
+- [ ] `ChosenEndpointTests` — testes (WebApplicationFactory)
+
+#### Swagger
+- [ ] Confirmar funcionamento — já configurado via `AddOpenApi()` + `MapOpenApi()`
 
 ### Etapa 5 - Blazor Frontend
 - [ ] Configurar `Program.cs` do Web (HttpClient apontando para API)
