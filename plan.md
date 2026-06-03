@@ -8,7 +8,7 @@
 - Entity Framework Core + Npgsql (PostgreSQL)
 - Supabase (PostgreSQL hosted)
 - ASP.NET Core Identity + JWT Bearer
-- xUnit (TDD) — **86 testes** (39 Services + 5 Auth + 10 Event + 5 ChosenList + 11 Item + 8 Chosen + 6 Blazor helper + 2 integração)
+- xUnit (TDD) — **86 testes** (39 Services + 5 Auth + 10 Event + 5 ChosenList + 11 Item + 8 Chosen + 6 Blazor helper + 2 integração) ✅
 
 ---
 
@@ -402,7 +402,16 @@ Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
 - [x] Fitas decorativas (washi tape): 5 classes CSS individuais, posicionamento absoluto, clip-path
 - [x] Pseudo-elementos cinzas removidos, padding dos cards aumentado
 - [x] Event header com nome e data do evento
-- [ ] **Dashboard Admin** (autenticado) — listar/criar/editar eventos, gerenciar itens, ver/deletar escolhas
+- [x] Merge `feature/blazor-pagina-publica` → `develop`
+- [x] Deletar branch `feature/blazor-pagina-publica`
+- [x] Criar branch `feature/dashboard-admin`
+
+### Etapa 6 - Dashboard Admin (Blazor autenticado)
+- [ ] Tela de login (capturar e armazenar JWT)
+- [ ] Página de dashboard com listagem de eventos do admin
+- [ ] Criar novo evento com itens
+- [ ] Detalhe do evento: gerenciar itens (CRUD), ver/deletar escolhas
+- [ ] Layout admin com sidebar + topbar
 - [x] `ListPageTests` — 6 testes Moq do helper
 - [ ] **Dashboard Admin** (autenticado) — listar/criar/editar eventos, gerenciar itens, ver/deletar escolhas
 
