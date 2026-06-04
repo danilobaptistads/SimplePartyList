@@ -705,3 +705,165 @@ main article.content {
 .add-item-cota-input {
     max-width: 80px;
 }
+
+/* ===== Mobile Responsive ===== */
+
+@media (max-width: 360px) {
+    main article.content {
+        padding: 10px;
+    }
+
+    .card-beige {
+        padding: 14px 10px 14px;
+    }
+
+    .login-card {
+        padding: 24px 16px 20px;
+    }
+
+    .btn-sm {
+        font-size: 0.78rem;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Touch targets >= 44px */
+    .login-card input {
+        padding: 14px 16px;
+        font-size: 1rem;
+    }
+
+    .login-card .btn-login {
+        padding: 14px;
+        font-size: 1rem;
+    }
+
+    .btn {
+        min-height: 44px;
+    }
+
+    .btn-sm {
+        min-height: 36px;
+        padding: 8px 14px;
+    }
+
+    /* Card padding reduction */
+    .card-beige {
+        padding: 20px 16px 20px;
+    }
+
+    .login-section {
+        padding: 40px 12px;
+    }
+
+    main article.content {
+        padding: 16px;
+    }
+
+    /* Hide decorative tapes on mobile */
+    .tape {
+        display: none;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    main article.content {
+        padding: 20px 24px;
+    }
+
+    .card-beige {
+        padding: 28px 24px 24px;
+    }
+}
+
+/* ===== Mobile < 768px: hide sidebar, responsive content ===== */
+@media (max-width: 767.98px) {
+    .sidebar {
+        display: none !important;
+    }
+
+    .page {
+        overflow-x: hidden;
+    }
+
+    .table td,
+    .table th {
+        white-space: normal;
+        word-break: break-word;
+        font-size: 0.82rem;
+    }
+
+    .card-beige {
+        overflow: hidden;
+    }
+
+    /* Dashboard heading + button stack */
+    .d-flex.justify-content-between.align-items-center.mb-4.flex-wrap.gap-2 {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-4.flex-wrap.gap-2 .btn {
+        width: 100%;
+    }
+
+    /* EventoDetalhe header row: back button + actions stack */
+    .d-flex.justify-content-between.align-items-center.mb-3.flex-wrap.gap-2 {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-3.flex-wrap.gap-2 .btn {
+        width: 100%;
+    }
+
+    /* EventoDetalhe inline action group */
+    .d-flex.gap-2.flex-wrap {
+        width: 100%;
+    }
+
+    .d-flex.gap-2.flex-wrap .btn {
+        flex: 1;
+    }
+
+    /* Card titles smaller */
+    .event-card-title {
+        font-size: 1rem;
+        word-break: break-word;
+    }
+
+    .event-card-date {
+        word-break: break-word;
+    }
+
+    .card-title-step {
+        font-size: 0.85rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+
+    .card-beige {
+        word-break: break-word;
+    }
+
+    main article.content {
+        word-break: break-word;
+    }
+
+    /* Add-item form stacking */
+    .add-item-form .add-item-field {
+        min-width: 100%;
+    }
+
+    .add-item-form .btn-sm {
+        width: 100%;
+    }
+
+    /* CriarEvento card full width on small screens */
+    .card-beige[style*="max-width: 500px"] {
+        max-width: 100% !important;
+    }
+}

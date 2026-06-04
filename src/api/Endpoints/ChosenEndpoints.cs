@@ -63,13 +63,24 @@ public static class ChosenEndpoints
             var chosenList = await chosenListService.GetByListUrlAsync(listUrl);
             if (chosenList is null) return Results.NotFound();
 
-            var chosen = await chosenService.SubmitAsync(chosenList.ChosenListId, dto.GuestName, dto.ItemId);
-            return Results.Created($"/api/lists/{listUrl}/chosens/{chosen.ChosenId}", new ChosenResponseDto
+            try
             {
-                ChosenId = chosen.ChosenId,
-                GuestName = chosen.GuestName,
-                ItemName = chosen.ItemName
-            });
+                var chosen = await chosenService.SubmitAsync(chosenList.ChosenListId, dto.GuestName, dto.ItemId);
+                return Results.Created($"/api/lists/{listUrl}/chosens/{chosen.ChosenId}", new ChosenResponseDto
+                {
+                    ChosenId = chosen.ChosenId,
+                    GuestName = chosen.GuestName,
+                    ItemName = chosen.ItemName
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Results.NotFound(ex.Message);
+            }
         });
     }
 }

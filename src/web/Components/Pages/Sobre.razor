@@ -1,0 +1,28 @@
+@page "/sobre"
+@layout Layout.PublicLayout
+@inject IJSRuntime JS
+
+<PageTitle>Sobre - Simple Party List</PageTitle>
+
+<div class="login-section">
+    <div class="login-card" style="text-align:center;">
+        <div class="login-logo">
+            <img src="/images/logoverde.png" alt="SPL">
+        </div>
+        <h3>Sobre</h3>
+        <p style="font-size:0.9rem;color:#555;margin-bottom:6px;">
+            Simple Party List é uma aplicação para gerenciar listas de presentes para festas.
+        </p>
+        <p style="font-size:0.85rem;color:#777;margin-bottom:0;">
+            Os convidados acessam o link público, escolhem os itens desejados e o organizador acompanha as escolhas em tempo real.
+        </p>
+        <button class="btn btn-outline-primary btn-custom" style="margin-top:20px;" @onclick="GoBack">Voltar</button>
+    </div>
+</div>
+
+@code {
+    private async Task GoBack()
+    {
+        await JS.InvokeVoidAsync("history.back");
+    }
+}
