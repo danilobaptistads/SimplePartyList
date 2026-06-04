@@ -44,9 +44,5 @@ jobs:
           } else {
             "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           }
-          & $msdeploy `
-            -verb:sync `
-            -source:contentPath="${{ github.workspace }}\publish" `
-            -dest:contentPath="site72502",ComputerName="https://site72502.siteasp.net:8172/msdeploy.axd",UserName="site72502",Password="${{ secrets.WEB_DEPLOY_PASS }}",AuthType="Basic" `
-            -allowUntrusted
+          & $msdeploy -verb:sync -source:contentPath="${{ github.workspace }}\publish" "-dest:contentPath=site72502,ComputerName=https://site72502.siteasp.net:8172/msdeploy.axd,UserName=site72502,Password=${{ secrets.WEB_DEPLOY_PASS }},AuthType=Basic" -allowUntrusted
         shell: pwsh
