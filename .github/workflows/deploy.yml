@@ -17,6 +17,8 @@ jobs:
       - run: dotnet restore
 
       - run: dotnet test tests/tests.csproj -c Release
+        env:
+          ASPNETCORE_ENVIRONMENT: Testing
 
       - run: dotnet publish src/web/web.csproj -c Release -o ./publish --no-restore
 
