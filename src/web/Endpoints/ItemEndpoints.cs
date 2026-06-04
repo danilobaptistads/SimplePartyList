@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SimplePartyList.Core.DTOs;
 using SimplePartyList.Core.Interfaces;
 
-namespace SimplePartyList.API.Endpoints;
+namespace SimplePartyList.Web.Endpoints;
 
 public static class ItemEndpoints
 {

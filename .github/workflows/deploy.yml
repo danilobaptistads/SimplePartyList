@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - run: dotnet restore
+
+      - run: dotnet test tests/tests.csproj -c Release
+
+      - run: dotnet publish src/web/web.csproj -c Release -o ./publish --no-restore
+
+      - name: Deploy via WebDeploy
+        run: |
+          & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
+            -verb:sync `
+            -source:contentPath="${{ github.workspace }}\publish" `
+            -dest:contentPath="site72502",ComputerName="https://site72502.siteasp.net:8172/msdeploy.axd",UserName="site72502",Password="${{ secrets.WEB_DEPLOY_PASS }}",AuthType="Basic" `
+            -allowUntrusted
+        shell: pwsh

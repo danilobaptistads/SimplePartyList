@@ -592,6 +592,26 @@ body {
     transform: translateY(-2px);
 }
 
+.event-card-remove {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--color-text-light);
+    z-index: 2;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.15s;
+    background: none;
+    border: none;
+}
+
+.event-card-remove:hover {
+    color: #dc3545;
+}
+
 .event-card-title {
     font-size: 1.15rem;
     font-weight: 700;

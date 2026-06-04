@@ -5,7 +5,7 @@ using SimplePartyList.Core.DTOs;
 using SimplePartyList.Core.Interfaces;
 using SimplePartyList.Infrastructure.Data;
 
-namespace SimplePartyList.API.Endpoints;
+namespace SimplePartyList.Web.Endpoints;
 
 public static class EventEndpoints
 {

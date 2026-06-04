@@ -60,11 +60,39 @@ else
         @foreach (var ev in _eventos)
         {
             <div class="card-beige event-card" @onclick="() => IrDetalhe(ev.EventId)">
+                <button class="event-card-remove"
+                        @onclick:stopPropagation
+                        @onclick="() => _eventoParaExcluir = ev">×</button>
                 <h4 class="event-card-title">@ev.Name</h4>
                 <p class="event-card-date">@ev.Date.ToString("dd 'de' MMMM 'de' yyyy")</p>
                 <small class="text-muted">ListUrl: @ev.ListUrl</small>
             </div>
         }
+    </div>
+}
+
+@if (_eventoParaExcluir is not null)
+{
+    <div class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="text-center mb-3" style="color: var(--color-primary);">Remover evento</h3>
+            <p class="text-center">Deseja remover o evento <strong>@_eventoParaExcluir.Name</strong>?</p>
+            <p class="text-center text-muted small">Esta ação não pode ser desfeita.</p>
+            @if (_erroExcluir is not null)
+            {
+                <div class="alert alert-danger text-center">@_erroExcluir</div>
+            }
+            <div class="modal-actions">
+                <button class="btn btn-outline-secondary btn-custom" @onclick="CancelarExclusao" disabled="@_excluindo">Cancelar</button>
+                <button class="btn btn-danger btn-custom" @onclick="ConfirmarExclusao" disabled="@_excluindo">
+                    @if (_excluindo)
+                    {
+                        <span class="spinner-border spinner-border-sm me-1"></span>
+                    }
+                    REMOVER
+                </button>
+            </div>
+        </div>
     </div>
 }
 
@@ -138,5 +166,41 @@ else
     private void IrCriarEvento()
     {
         Navigation.NavigateTo("/admin/events/novo");
+    }
+
+    private AdminEventResponseDto? _eventoParaExcluir;
+    private bool _excluindo;
+    private string? _erroExcluir;
+
+    private async Task ConfirmarExclusao()
+    {
+        if (_eventoParaExcluir is null) return;
+        _excluindo = true;
+        _erroExcluir = null;
+        try
+        {
+            var ok = await Auth.DeleteAsync($"/api/events/{_eventoParaExcluir.EventId}");
+            if (ok)
+            {
+                _eventos?.Remove(_eventoParaExcluir);
+                _eventoParaExcluir = null;
+            }
+            else
+                _erroExcluir = "Erro ao remover evento";
+        }
+        catch
+        {
+            _erroExcluir = "Erro de conexão";
+        }
+        finally
+        {
+            _excluindo = false;
+        }
+    }
+
+    private void CancelarExclusao()
+    {
+        _eventoParaExcluir = null;
+        _erroExcluir = null;
     }
 }
