@@ -72,8 +72,9 @@ else
         <div class="tape tape--verde-superior-direita"></div>
         <h3 class="card-title-step">Olá! Antes de escolher um presente...</h3>
         <input class="form-control form-control-lg input-custom"
-               value="@_nomeConvidado"
-               @oninput="OnNomeChanged"
+               @bind-value="@_nomeConvidado"
+               @bind-value:event="oninput"
+               @bind-value:after="() => _nomeTocado = true"
                placeholder="Digite seu nome completo"
                disabled="@(_lista.IsExpired)" />
     </div>
@@ -190,12 +191,6 @@ else
         {
             _errorMessage = "Erro ao carregar a lista.";
         }
-    }
-
-    private void OnNomeChanged(ChangeEventArgs e)
-    {
-        _nomeConvidado = e.Value?.ToString() ?? "";
-        _nomeTocado = true;
     }
 
     private void AlternarItem(Guid itemId, bool disponivel)

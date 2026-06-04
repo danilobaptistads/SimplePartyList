@@ -18,13 +18,13 @@
             }
             <div class="field">
                 <input type="email" placeholder="Email"
-                       value="@_emailLogin"
-                       @oninput="e => _emailLogin = e.Value?.ToString() ?? string.Empty" />
+                       @bind-value="@_emailLogin"
+                       @bind-value:event="oninput" />
             </div>
             <div class="field">
                 <input type="password" placeholder="Senha"
-                       value="@_senhaLogin"
-                       @oninput="e => _senhaLogin = e.Value?.ToString() ?? string.Empty" />
+                       @bind-value="@_senhaLogin"
+                       @bind-value:event="oninput" />
             </div>
             <button class="btn-login" @onclick="LoginAsync" disabled="@_carregandoLogin">ENTRAR</button>
         </div>
