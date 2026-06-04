@@ -6,7 +6,7 @@ on:
 
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +21,13 @@ jobs:
           ASPNETCORE_ENVIRONMENT: Testing
 
       - run: dotnet publish src/web/web.csproj -c Release --output ./publish --no-restore
+
+      - name: Install Web Deploy
+        run: |
+          if (-not (Test-Path "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe")) {
+            choco install webdeploy -y --no-progress
+          }
+        shell: pwsh
 
       - name: Deploy to MonsterASP.NET via WebDeploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
