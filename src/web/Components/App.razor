@@ -16,6 +16,26 @@
 <body>
     <Routes />
     <script src="_framework/blazor.web.js"></script>
+    <script>
+        Blazor.start({
+            reconnectionOptions: {
+                maxRetries: 30,
+                retryIntervalMilliseconds: 2000
+            }
+        }).then(function () {
+            var err = document.getElementById('blazor-error-ui');
+            if (err) err.style.display = 'none';
+        });
+
+        document.addEventListener('blazor:reconnected', function () {
+            var err = document.getElementById('blazor-error-ui');
+            if (err) err.style.display = 'none';
+        });
+
+        document.addEventListener('blazor:disconnected', function () {
+            console.warn('Circuito desconectado, tentando religar...');
+        });
+    </script>
 </body>
 
 </html>
