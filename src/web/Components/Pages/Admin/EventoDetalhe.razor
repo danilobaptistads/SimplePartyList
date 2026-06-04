@@ -3,6 +3,7 @@
 @layout Layout.MainLayout
 @inject AdminAuthHelper Auth
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <PageTitle>Detalhe do Evento - Simple Party List</PageTitle>
 
@@ -50,7 +51,7 @@ else
             <button class="btn btn-outline-primary btn-sm" @onclick="Recarregar" disabled="@_carregando">
                 &#x21bb; Atualizar
             </button>
-            <a href="@($"http://localhost:5193/list/{_listUrl}")" target="_blank" class="btn btn-outline-primary btn-sm">
+            <a href="@($"{Navigation.BaseUri.TrimEnd('/')}/list/{_listUrl}")" target="_blank" class="btn btn-outline-primary btn-sm">
                 Ver página pública
             </a>
         </div>
@@ -59,7 +60,22 @@ else
     <div class="card-beige">
         <h3 style="color: var(--color-primary);">@_eventoNome</h3>
         <p class="text-muted">@_eventoData.ToString("dd 'de' MMMM 'de' yyyy 'às' HH:mm")</p>
-        <p><strong>Link público:</strong> /list/@_listUrl</p>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <strong>Link público:</strong>
+            <a href="@($"{Navigation.BaseUri.TrimEnd('/')}/list/{_listUrl}")" target="_blank" class="text-break" style="flex:1;">
+                @($"{Navigation.BaseUri.TrimEnd('/')}/list/{_listUrl}")
+            </a>
+            <button class="btn btn-outline-primary btn-sm" @onclick="CopiarLink">
+                @if (_copiado)
+                {
+                    <span>Copiado!</span>
+                }
+                else
+                {
+                    <span>&#x1F4CB; Copiar</span>
+                }
+            </button>
+        </div>
     </div>
 
     <div class="card-beige">
@@ -191,6 +207,8 @@ else
     private bool _novaCotaAtiva;
     private string? _erroItem;
 
+    private bool _copiado;
+
     private string _emailLogin = string.Empty;
     private string _senhaLogin = string.Empty;
     private string? _erroLogin;
@@ -313,6 +331,16 @@ else
         var ok = await Auth.DeleteAsync($"/api/items/{itemId}");
         if (ok)
             await CarregarAsync();
+    }
+
+    private async Task CopiarLink()
+    {
+        var url = $"{Navigation.BaseUri.TrimEnd('/')}/list/{_listUrl}";
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", url);
+        _copiado = true;
+        StateHasChanged();
+        await Task.Delay(2000);
+        _copiado = false;
     }
 
     private async Task DeletarEscolhaAsync(Guid chosenId, string itemName)

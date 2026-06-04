@@ -43,8 +43,8 @@
     <div class="mb-3">
         <label class="form-label fw-bold">Nome do Evento</label>
         <input class="form-control form-control-lg input-custom"
-               value="@_nome"
-               @oninput="e => _nome = e.Value?.ToString() ?? string.Empty"
+               @bind-value="@_nome"
+               @bind-value:event="oninput"
                placeholder="Ex: Festa de Aniversário" />
     </div>
 
