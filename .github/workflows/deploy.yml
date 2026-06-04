@@ -20,9 +20,29 @@ jobs:
 
       - run: dotnet publish src/web/web.csproj -c Release -o ./publish --no-restore
 
+      - name: Install Web Deploy
+        run: |
+          $paths = @(
+            "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe",
+            "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          )
+          $exists = $false
+          foreach ($p in $paths) {
+            if (Test-Path $p) { $exists = $true; break }
+          }
+          if (-not $exists) {
+            choco install webdeploy -y --no-progress
+          }
+        shell: pwsh
+
       - name: Deploy via WebDeploy
         run: |
-          & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
+          $msdeploy = if (Test-Path "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe") {
+            "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          } else {
+            "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          }
+          & $msdeploy `
             -verb:sync `
             -source:contentPath="${{ github.workspace }}\publish" `
             -dest:contentPath="site72502",ComputerName="https://site72502.siteasp.net:8172/msdeploy.axd",UserName="site72502",Password="${{ secrets.WEB_DEPLOY_PASS }}",AuthType="Basic" `
