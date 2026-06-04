@@ -10,11 +10,15 @@ public static class DbInitializer
     public static async Task SeedAsync(SimplePartyListContext context, IServiceProvider sp)
     {
         if (context.Database.IsRelational())
-            await context.Database.MigrateAsync();
-
-        var userManager = sp.GetRequiredService<UserManager<Admin>>();
-        if (await userManager.FindByEmailAsync("spladmin@spl.com") is null)
         {
+            var pending = await context.Database.GetPendingMigrationsAsync();
+            if (pending.Any())
+                await context.Database.MigrateAsync();
+        }
+
+        if (!await context.Users.AnyAsync(u => u.Email == "spladmin@spl.com"))
+        {
+            var userManager = sp.GetRequiredService<UserManager<Admin>>();
             var admin = new Admin
             {
                 UserName = "spladmin",

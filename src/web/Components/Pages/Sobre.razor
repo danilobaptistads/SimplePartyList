@@ -1,6 +1,6 @@
 @page "/sobre"
 @layout Layout.PublicLayout
-@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 <PageTitle>Sobre - Simple Party List</PageTitle>
 
@@ -16,13 +16,14 @@
         <p style="font-size:0.85rem;color:#777;margin-bottom:0;">
             Os convidados acessam o link público, escolhem os itens desejados e o organizador acompanha as escolhas em tempo real.
         </p>
-        <button class="btn btn-outline-primary btn-custom" style="margin-top:20px;" @onclick="GoBack">Voltar</button>
+        <button class="btn btn-outline-primary btn-custom" style="margin-top:20px;"
+                @onclick="Voltar">Voltar</button>
     </div>
 </div>
 
 @code {
-    private async Task GoBack()
+    private void Voltar()
     {
-        await JS.InvokeVoidAsync("history.back");
+        Navigation.NavigateTo("/");
     }
 }

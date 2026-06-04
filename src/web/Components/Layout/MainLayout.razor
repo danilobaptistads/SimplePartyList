@@ -28,9 +28,10 @@
 </div>
 
 @code {
-    private void Logout()
+    private async Task Logout()
     {
         Auth.Logout();
         Navigation.NavigateTo("/login", forceLoad: true);
+        await Task.CompletedTask;
     }
 }

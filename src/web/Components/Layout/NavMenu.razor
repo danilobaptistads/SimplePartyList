@@ -47,7 +47,7 @@
         await OnNavClick.InvokeAsync();
     }
 
-    private void LogoutOrRedirect()
+    private async Task LogoutOrRedirect()
     {
         if (Auth.IsAuthenticated)
         {
@@ -58,5 +58,6 @@
         {
             Navigation.NavigateTo("/login");
         }
+        await Task.CompletedTask;
     }
 }
