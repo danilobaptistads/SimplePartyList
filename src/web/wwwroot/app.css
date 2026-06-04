@@ -8,12 +8,39 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary-dark);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:focus-visible {
+    background-color: var(--color-primary-dark) !important;
+    border-color: var(--color-primary-dark) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.btn-outline-primary {
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    background: transparent;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary:focus-visible {
+    background: var(--color-primary) !important;
+    color: white !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem rgba(26,122,106,0.25);
 }
 
 .content {
@@ -116,6 +143,138 @@ body {
 .top-bar .admin-link:hover {
     opacity: 1;
     background: rgba(255,255,255,0.1);
+}
+
+.top-bar .logo-img {
+    height: 40px;
+    width: auto;
+}
+
+/* ===== Login Corporativo ===== */
+.login-section {
+    background: #ECECEC;
+    padding: 60px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 400px;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border: 1px solid #e8e4dc;
+    padding: 36px 32px 32px;
+    width: 100%;
+    max-width: 380px;
+    box-sizing: border-box;
+}
+
+.login-card .login-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.login-card .login-logo img {
+    width: 72px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.login-card h3 {
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #444;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin: 0 0 24px;
+}
+
+.login-card .field {
+    margin-bottom: 14px;
+}
+
+.login-card input {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333;
+    background: #fff;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.login-card input::placeholder {
+    color: #999;
+}
+
+.login-card input:focus {
+    border-color: #2A7D80;
+}
+
+.login-card .btn-login {
+    width: 100%;
+    padding: 11px;
+    margin-top: 8px;
+    background: #2A7D80;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-card .btn-login:hover {
+    background: #236b6e;
+}
+
+.login-card .btn-login:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.login-card .login-link {
+    display: block;
+    text-align: center;
+    margin-top: 18px;
+    font-size: 0.78rem;
+    color: #666;
+    text-decoration: underline;
+}
+
+.login-card .login-error {
+    background: #fdecea;
+    color: #c0392b;
+    border: 1px solid #f5c6cb;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+/* ===== Sidebar Logo ===== */
+.sidebar .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar .sidebar-logo {
+    height: 28px;
+    width: auto;
 }
 
 /* Page Wrapper */
@@ -419,4 +578,130 @@ body {
     height: 24px;
     opacity: 0.85;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ========== Admin Dashboard ========== */
+
+.event-card {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.event-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.event-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 4px;
+}
+
+.event-card-date {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin: 0 0 4px;
+}
+
+/* Admin layout: sidebar verde petróleo */
+.page {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    background: var(--color-primary);
+    width: 220px;
+    flex-shrink: 0;
+}
+
+.sidebar .navbar-brand {
+    color: white;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 1rem;
+}
+
+.sidebar .nav-link {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: white;
+    background: rgba(255,255,255,0.15);
+}
+
+.sidebar .top-row {
+    background: rgba(0,0,0,0.15);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+main article.content {
+    padding: 24px 32px;
+}
+
+.top-row a {
+    color: var(--color-text-light);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+/* Admin tables */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-light);
+    border-bottom: 2px solid var(--color-beige-dark);
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Add item form */
+.add-item-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.add-item-field {
+    flex: 1;
+    min-width: 120px;
+}
+
+.add-item-cota-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.add-item-checkbox {
+    margin-top: 0;
+    cursor: pointer;
+}
+
+.add-item-label {
+    font-size: 0.82rem;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+.add-item-cota-input {
+    max-width: 80px;
 }

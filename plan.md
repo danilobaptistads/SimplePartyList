@@ -407,22 +407,32 @@ Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
 - [x] Criar branch `feature/dashboard-admin`
 
 ### Etapa 6 - Dashboard Admin (Blazor autenticado)
-- [ ] Tela de login (capturar e armazenar JWT)
-- [ ] Página de dashboard com listagem de eventos do admin
-- [ ] Criar novo evento com itens
-- [ ] Detalhe do evento: gerenciar itens (CRUD), ver/deletar escolhas
-- [ ] Layout admin com sidebar + topbar
-- [x] `ListPageTests` — 6 testes Moq do helper
-- [ ] **Dashboard Admin** (autenticado) — listar/criar/editar eventos, gerenciar itens, ver/deletar escolhas
+- [x] Tela de login (`/login`, `Login.razor`) com `AdminAuthHelper`
+- [x] `AdminAuthHelper.cs` — auth service com `IHttpClientFactory` + `TokenStore` scoped
+- [x] `TokenStore.cs` — scoped JWT storage (sem JS interop, funciona em prerendering)
+- [x] Dashboard (`/admin/dashboard`) — listagem de eventos do admin
+- [x] Criar evento (`/admin/events/novo`) com nome + data
+- [x] Detalhe do evento (`/admin/events/{id}`) — itens CRUD, escolhas view/delete
+- [x] Layout admin com sidebar verde + topbar com "Sair"
+- [x] `Login.razor` com `@layout PublicLayout` (topbar pública)
+- [x] `Dashboard.razor`, `CriarEvento.razor`, `EventoDetalhe.razor` com `@layout MainLayout`
+- [x] `NavMenu.razor` atualizado com links Dashboard, Novo Evento, Login
+- [x] `MainLayout.razor` — logout + link condicional "Sair"/"Fazer login"
+- [x] CSS admin (.event-card, .sidebar, .table)
+- [x] Registro de serviços em `Program.cs` (`AdminAuthHelper`, `TokenStore`, `IHttpClientFactory` named client)
+- [x] `TokenStore` scoped resolve problema de JS interop em prerendering
+- [x] `preview-admin.html` — preview standalone com login corporativo + dashboard
+- [x] `wwwroot/images/` — pasta criada para imagens estáticas
+- [ ] **Dashboard Admin** funcional — testar fluxo completo login → dashboard → criar → detalhe
 
-### Etapa 6 - Expiração + Validações
+### Etapa 7 - Expiração + Validações
 - [x] Verificar expiração ao acessar lista (API + frontend)
 - [x] Bloquear submissão se expirado (desabilitar inputs + botão)
 - [x] Validações de formulário (nome + itens obrigatórios, só após interagir)
 - [x] Feedback visual para o usuário (loading, erros, sucesso, spinner)
 - [ ] Validação server-side no submit (se expirou entre abrir e submeter)
 
-### Etapa 7 - Ajustes Finais
+### Etapa 8 - Ajustes Finais
 - [ ] UI responsiva (CSS básico ou Bootstrap)
 - [ ] Testes end-to-end manuais
 - [ ] Revisão geral de segurança

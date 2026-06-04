@@ -1,0 +1,320 @@
+@page "/admin/events/{EventId:guid}"
+@rendermode InteractiveServer
+@layout Layout.MainLayout
+@inject AdminAuthHelper Auth
+@inject NavigationManager Navigation
+
+<PageTitle>Detalhe do Evento - Simple Party List</PageTitle>
+
+@if (!Auth.IsAuthenticated)
+{
+    <div class="login-section" style="padding:20px 0;">
+        <div class="login-card" style="margin:0;max-width:100%;">
+            <div class="login-logo"><img src="/images/logoverde.png" alt="SPL"></div>
+            <h3>Login</h3>
+            @if (_erroLogin is not null)
+            {
+                <div class="login-error">@_erroLogin</div>
+            }
+            <div class="field">
+                <input type="email" placeholder="Email"
+                       value="@_emailLogin"
+                       @oninput="e => _emailLogin = e.Value?.ToString() ?? string.Empty" />
+            </div>
+            <div class="field">
+                <input type="password" placeholder="Senha"
+                       value="@_senhaLogin"
+                       @oninput="e => _senhaLogin = e.Value?.ToString() ?? string.Empty" />
+            </div>
+            <button class="btn-login" @onclick="LoginAsync" disabled="@_carregandoLogin">ENTRAR</button>
+        </div>
+    </div>
+    return;
+}
+
+@if (_carregando)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+}
+else if (_erro is not null)
+{
+    <div class="alert alert-danger">@_erro</div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="/admin/dashboard" class="btn btn-outline-primary btn-sm">&larr; Voltar</a>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm" @onclick="Recarregar" disabled="@_carregando">
+                &#x21bb; Atualizar
+            </button>
+            <a href="@($"http://localhost:5193/list/{_listUrl}")" target="_blank" class="btn btn-outline-primary btn-sm">
+                Ver página pública
+            </a>
+        </div>
+    </div>
+
+    <div class="card-beige">
+        <h3 style="color: var(--color-primary);">@_eventoNome</h3>
+        <p class="text-muted">@_eventoData.ToString("dd 'de' MMMM 'de' yyyy 'às' HH:mm")</p>
+        <p><strong>Link público:</strong> /list/@_listUrl</p>
+    </div>
+
+    <div class="card-beige">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-title-step" style="margin: 0;">Itens</h4>
+            <button class="btn btn-primary btn-sm" @onclick="MostrarAddItem">+ Adicionar</button>
+        </div>
+
+        @if (_mostrarAddItem)
+        {
+            <div class="add-item-form">
+                <div class="add-item-field">
+                    <input class="form-control input-custom"
+                           placeholder="Nome do item"
+                           @bind-value="_novoItemNome"
+                           @bind-value:event="oninput" />
+                </div>
+                <div class="add-item-cota-toggle">
+                    <input type="checkbox" class="form-check-input add-item-checkbox" @bind="_novaCotaAtiva" />
+                    <label class="form-check-label add-item-label">Cota</label>
+                </div>
+                @if (_novaCotaAtiva)
+                {
+                    <div class="add-item-cota-input">
+                        <input class="form-control input-custom"
+                               type="number"
+                               min="1"
+                               @bind-value="_novoItemCota"
+                               @bind-value:event="oninput" />
+                    </div>
+                }
+                <button class="btn btn-primary btn-sm" @onclick="AddItemAsync">Criar</button>
+            </div>
+            @if (_erroItem is not null)
+            {
+                <div class="validation-hint">@_erroItem</div>
+            }
+        }
+
+        @if (_itens is null || _itens.Count == 0)
+        {
+            <p class="text-muted text-center mb-0">Nenhum item adicionado</p>
+        }
+        else
+        {
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Cota</th>
+                        <th>Escolhas</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in _itens)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@(item.MaxQuantity?.ToString() ?? "Ilimitado")</td>
+                            <td>@item.ChosenCount</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm"
+                                        @onclick="() => DeletarItemAsync(item.ItemId)"
+                                        disabled="@(item.ChosenCount > 0)">
+                                    @(item.ChosenCount > 0 ? "Bloqueado" : "Excluir")
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <div class="card-beige">
+        <h4 class="card-title-step" style="margin-bottom: 12px;">Escolhas dos Convidados</h4>
+        @if (_escolhas is null || _escolhas.Count == 0)
+        {
+            <p class="text-muted text-center mb-0">Nenhuma escolha ainda</p>
+        }
+        else
+        {
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Convidado</th>
+                        <th>Item</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in _escolhas)
+                    {
+                        <tr>
+                            <td>@c.GuestName</td>
+                            <td>@c.ItemName</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm"
+                                        @onclick="() => DeletarEscolhaAsync(c.ChosenId, c.ItemName)">
+                                    Deletar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public Guid EventId { get; set; }
+
+    private string _eventoNome = string.Empty;
+    private DateTime _eventoData;
+    private Guid _listUrl;
+    private List<ItemDto>? _itens;
+    private List<ChosenResponseDto>? _escolhas;
+    private bool _carregando = true;
+    private string? _erro;
+    private bool _mostrarAddItem;
+    private string _novoItemNome = string.Empty;
+    private string _novoItemCota = "1";
+    private bool _novaCotaAtiva;
+    private string? _erroItem;
+
+    private string _emailLogin = string.Empty;
+    private string _senhaLogin = string.Empty;
+    private string? _erroLogin;
+    private bool _carregandoLogin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Auth.IsAuthenticated)
+            await CarregarAsync();
+        else
+            _carregando = false;
+    }
+
+    private async Task LoginAsync()
+    {
+        _carregandoLogin = true;
+        _erroLogin = null;
+        try
+        {
+            if (await Auth.LoginAsync(_emailLogin, _senhaLogin))
+            {
+                _emailLogin = string.Empty;
+                _senhaLogin = string.Empty;
+                await CarregarAsync();
+            }
+            else
+                _erroLogin = "Email ou senha inválidos";
+        }
+        catch
+        {
+            _erroLogin = "Erro de conexão";
+        }
+        finally
+        {
+            _carregandoLogin = false;
+        }
+    }
+
+    private async Task CarregarAsync()
+    {
+        _carregando = true;
+        try
+        {
+            var evento = await Auth.GetAsync<AdminEventResponseDto>($"/api/events/{EventId}");
+            if (evento is null)
+            {
+                _erro = "Evento não encontrado";
+                return;
+            }
+
+            _eventoNome = evento.Name;
+            _eventoData = evento.Date;
+            _listUrl = evento.ListUrl;
+
+            _itens = await Auth.GetAsync<List<ItemDto>>($"/api/events/{EventId}/items");
+            _escolhas = await Auth.GetAsync<List<ChosenResponseDto>>($"/api/events/{EventId}/chosens");
+        }
+        catch
+        {
+            _erro = "Erro ao carregar dados";
+        }
+        finally
+        {
+            _carregando = false;
+        }
+    }
+
+    private async Task Recarregar()
+    {
+        _erro = null;
+        await CarregarAsync();
+    }
+
+    private void MostrarAddItem()
+    {
+        _mostrarAddItem = true;
+        _novaCotaAtiva = false;
+        _novoItemCota = "1";
+    }
+
+    private async Task AddItemAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_novoItemNome))
+        {
+            _erroItem = "Informe o nome do item";
+            return;
+        }
+
+        int? cota = null;
+        if (_novaCotaAtiva)
+        {
+            if (!int.TryParse(_novoItemCota, out var v) || v < 1)
+            {
+                _novoItemCota = "1";
+                v = 1;
+            }
+            cota = v;
+        }
+
+        _erroItem = null;
+
+        var dto = new CreateItemDto { Name = _novoItemNome, MaxQuantity = cota };
+        var result = await Auth.PostAsync<ItemDto>($"/api/events/{EventId}/items", dto);
+        if (result is not null)
+        {
+            _novoItemNome = string.Empty;
+            _novoItemCota = string.Empty;
+            _novaCotaAtiva = false;
+            _mostrarAddItem = false;
+            await CarregarAsync();
+        }
+        else
+        {
+            _erroItem = "Erro ao criar item. Verifique a conexão.";
+        }
+    }
+
+    private async Task DeletarItemAsync(Guid itemId)
+    {
+        var ok = await Auth.DeleteAsync($"/api/items/{itemId}");
+        if (ok)
+            await CarregarAsync();
+    }
+
+    private async Task DeletarEscolhaAsync(Guid chosenId, string itemName)
+    {
+        var ok = await Auth.DeleteAsync($"/api/chosens/{chosenId}");
+        if (ok)
+            await CarregarAsync();
+    }
+}

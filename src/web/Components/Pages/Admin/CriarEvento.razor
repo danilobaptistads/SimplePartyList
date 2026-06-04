@@ -1,0 +1,166 @@
+@page "/admin/events/novo"
+@rendermode InteractiveServer
+@layout Layout.MainLayout
+@inject AdminAuthHelper Auth
+@inject NavigationManager Navigation
+
+<PageTitle>Novo Evento - Simple Party List</PageTitle>
+
+@if (!Auth.IsAuthenticated)
+{
+    <div class="login-section" style="padding: 20px 0;">
+        <div class="login-card" style="margin:0;max-width:100%;">
+            <div class="login-logo"><img src="/images/logoverde.png" alt="SPL"></div>
+            <h3>Login</h3>
+            @if (_erroLogin is not null)
+            {
+                <div class="login-error">@_erroLogin</div>
+            }
+            <div class="field">
+                <input type="email" placeholder="Email"
+                       value="@_emailLogin"
+                       @oninput="e => _emailLogin = e.Value?.ToString() ?? string.Empty" />
+            </div>
+            <div class="field">
+                <input type="password" placeholder="Senha"
+                       value="@_senhaLogin"
+                       @oninput="e => _senhaLogin = e.Value?.ToString() ?? string.Empty" />
+            </div>
+            <button class="btn-login" @onclick="LoginAsync" disabled="@_carregandoLogin">ENTRAR</button>
+        </div>
+    </div>
+    return;
+}
+
+<div class="card-beige" style="max-width: 500px; margin: 0 auto;">
+    <h3 class="card-title-step">NOVO EVENTO</h3>
+
+    @if (_erro is not null)
+    {
+        <div class="alert alert-danger">@_erro</div>
+    }
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Nome do Evento</label>
+        <input class="form-control form-control-lg input-custom"
+               value="@_nome"
+               @oninput="e => _nome = e.Value?.ToString() ?? string.Empty"
+               placeholder="Ex: Festa de Aniversário" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Data do Evento</label>
+        <input class="form-control form-control-lg input-custom"
+               type="date"
+               value="@_dataInput"
+               @oninput="e => _dataInput = e.Value?.ToString() ?? string.Empty" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Horário do Evento</label>
+        <input class="form-control form-control-lg input-custom"
+               type="time"
+               value="@_horaInput"
+               @oninput="e => _horaInput = e.Value?.ToString() ?? string.Empty" />
+    </div>
+
+    <button class="btn-submit" @onclick="CriarAsync" disabled="@_carregando">
+        @if (_carregando)
+        {
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        }
+        CRIAR EVENTO
+    </button>
+</div>
+
+@code {
+    private string _nome = string.Empty;
+    private string _dataInput = string.Empty;
+    private string _horaInput = string.Empty;
+    private string? _erro;
+    private bool _carregando;
+
+    private string _emailLogin = string.Empty;
+    private string _senhaLogin = string.Empty;
+    private string? _erroLogin;
+    private bool _carregandoLogin;
+
+    private async Task LoginAsync()
+    {
+        _carregandoLogin = true;
+        _erroLogin = null;
+        try
+        {
+            if (await Auth.LoginAsync(_emailLogin, _senhaLogin))
+            {
+                _emailLogin = string.Empty;
+                _senhaLogin = string.Empty;
+            }
+            else
+                _erroLogin = "Email ou senha inválidos";
+        }
+        catch
+        {
+            _erroLogin = "Erro de conexão";
+        }
+        finally
+        {
+            _carregandoLogin = false;
+        }
+    }
+
+    private async Task CriarAsync()
+    {
+        _erro = null;
+
+        if (string.IsNullOrWhiteSpace(_nome))
+        {
+            _erro = "Informe o nome do evento";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_dataInput))
+        {
+            _erro = "Selecione a data do evento";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_horaInput))
+        {
+            _erro = "Selecione o horário do evento";
+            return;
+        }
+
+        if (!DateTime.TryParse($"{_dataInput} {_horaInput}", out var data))
+        {
+            _erro = "Informe uma data e horário válidos";
+            return;
+        }
+
+        if (data <= DateTime.Now)
+        {
+            _erro = "A data do evento deve ser futura";
+            return;
+        }
+
+        _carregando = true;
+
+        try
+        {
+            var dto = new CreateEventDto { Name = _nome, Date = data };
+            var result = await Auth.PostAsync<AdminEventResponseDto>("/api/events", dto);
+            if (result is not null)
+                Navigation.NavigateTo($"/admin/events/{result.EventId}");
+            else
+                _erro = "Erro ao criar evento";
+        }
+        catch
+        {
+            _erro = "Erro de conexão";
+        }
+        finally
+        {
+            _carregando = false;
+        }
+    }
+}

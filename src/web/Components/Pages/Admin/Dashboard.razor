@@ -1,0 +1,142 @@
+@page "/admin/dashboard"
+@rendermode InteractiveServer
+@layout Layout.MainLayout
+@inject AdminAuthHelper Auth
+@inject NavigationManager Navigation
+
+<PageTitle>Dashboard - Simple Party List</PageTitle>
+
+@if (!Auth.IsAuthenticated)
+{
+    <div class="login-section" style="padding:20px 0;">
+        <div class="login-card" style="margin:0;max-width:100%;">
+            <div class="login-logo"><img src="/images/logoverde.png" alt="SPL"></div>
+            <h3>Login</h3>
+            @if (_erroLogin is not null)
+            {
+                <div class="login-error">@_erroLogin</div>
+            }
+            <div class="field">
+                <input type="email" placeholder="Email"
+                       value="@_emailLogin"
+                       @oninput="e => _emailLogin = e.Value?.ToString() ?? string.Empty" />
+            </div>
+            <div class="field">
+                <input type="password" placeholder="Senha"
+                       value="@_senhaLogin"
+                       @oninput="e => _senhaLogin = e.Value?.ToString() ?? string.Empty" />
+            </div>
+            <button class="btn-login" @onclick="LoginAsync" disabled="@_carregandoLogin">ENTRAR</button>
+        </div>
+    </div>
+    return;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 style="color: var(--color-primary); margin: 0;">Meus Eventos</h3>
+    <button class="btn btn-primary btn-dashboard-new" @onclick="IrCriarEvento">+ Novo Evento</button>
+</div>
+
+@if (_carregando)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Carregando eventos...</p>
+    </div>
+}
+else if (_erro is not null)
+{
+    <div class="alert alert-danger">@_erro</div>
+}
+else if (_eventos is null || _eventos.Count == 0)
+{
+    <div class="card-beige text-center">
+        <p class="text-muted mb-0">Nenhum evento encontrado. Crie seu primeiro evento!</p>
+    </div>
+}
+else
+{
+    <div class="event-list">
+        @foreach (var ev in _eventos)
+        {
+            <div class="card-beige event-card" @onclick="() => IrDetalhe(ev.EventId)">
+                <h4 class="event-card-title">@ev.Name</h4>
+                <p class="event-card-date">@ev.Date.ToString("dd 'de' MMMM 'de' yyyy")</p>
+                <small class="text-muted">ListUrl: @ev.ListUrl</small>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<AdminEventResponseDto>? _eventos;
+    private bool _carregando = true;
+    private string? _erro;
+
+    private string _emailLogin = string.Empty;
+    private string _senhaLogin = string.Empty;
+    private string? _erroLogin;
+    private bool _carregandoLogin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Auth.IsAuthenticated)
+            await CarregarEventos();
+        else
+            _carregando = false;
+    }
+
+    private async Task LoginAsync()
+    {
+        _carregandoLogin = true;
+        _erroLogin = null;
+        try
+        {
+            if (await Auth.LoginAsync(_emailLogin, _senhaLogin))
+            {
+                _emailLogin = string.Empty;
+                _senhaLogin = string.Empty;
+                await CarregarEventos();
+            }
+            else
+                _erroLogin = "Email ou senha inválidos";
+        }
+        catch
+        {
+            _erroLogin = "Erro de conexão";
+        }
+        finally
+        {
+            _carregandoLogin = false;
+        }
+    }
+
+    private async Task CarregarEventos()
+    {
+        _carregando = true;
+        try
+        {
+            _eventos = await Auth.GetAsync<List<AdminEventResponseDto>>("/api/events");
+            if (_eventos is null)
+                _erro = "Erro ao carregar eventos";
+        }
+        catch
+        {
+            _erro = "Erro de conexão";
+        }
+        finally
+        {
+            _carregando = false;
+        }
+    }
+
+    private void IrDetalhe(Guid eventId)
+    {
+        Navigation.NavigateTo($"/admin/events/{eventId}");
+    }
+
+    private void IrCriarEvento()
+    {
+        Navigation.NavigateTo("/admin/events/novo");
+    }
+}

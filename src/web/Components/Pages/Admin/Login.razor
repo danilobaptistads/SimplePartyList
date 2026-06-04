@@ -1,0 +1,72 @@
+@page "/login"
+@rendermode InteractiveServer
+@layout Layout.PublicLayout
+@inject AdminAuthHelper Auth
+@inject NavigationManager Navigation
+
+<PageTitle>Login - Simple Party List</PageTitle>
+
+<div class="login-section">
+    <div class="login-card">
+    <div class="login-logo">
+        <img src="/images/logoverde.png" alt="SPL">
+    </div>
+        <h3>Login</h3>
+
+        @if (_erro is not null)
+        {
+            <div class="login-error">@_erro</div>
+        }
+
+        <div class="field">
+            <input type="email" placeholder="Email"
+                   value="@_email"
+                   @oninput="e => _email = e.Value?.ToString() ?? string.Empty" />
+        </div>
+        <div class="field">
+            <input type="password" placeholder="Senha"
+                   value="@_senha"
+                   @oninput="e => _senha = e.Value?.ToString() ?? string.Empty" />
+        </div>
+
+        <button class="btn-login" @onclick="LoginAsync" disabled="@_carregando">
+            @if (_carregando)
+            {
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            }
+            ENTRAR
+        </button>
+
+        <span class="login-link">Esqueceu a senha?</span>
+    </div>
+</div>
+
+@code {
+    private string _email = string.Empty;
+    private string _senha = string.Empty;
+    private string? _erro;
+    private bool _carregando;
+
+    private async Task LoginAsync()
+    {
+        _carregando = true;
+        _erro = null;
+
+        try
+        {
+            var ok = await Auth.LoginAsync(_email, _senha);
+            if (ok)
+                Navigation.NavigateTo("/admin/dashboard");
+            else
+                _erro = "Email ou senha inválidos";
+        }
+        catch
+        {
+            _erro = "Erro ao conectar com o servidor";
+        }
+        finally
+        {
+            _carregando = false;
+        }
+    }
+}
