@@ -17,10 +17,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // === API Services ===
 
-if (builder.Environment.IsEnvironment("Testing"))
+var isTesting = builder.Environment.IsEnvironment("Testing")
+    || "Testing".Equals(builder.Configuration["ASPNETCORE_ENVIRONMENT"], StringComparison.OrdinalIgnoreCase)
+    || "Testing".Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), StringComparison.OrdinalIgnoreCase);
+
+if (isTesting)
 {
+    var dbName = "TestDb" + Guid.NewGuid();
     builder.Services.AddDbContext<SimplePartyListContext>(options =>
-        options.UseInMemoryDatabase("TestDb" + Guid.NewGuid()));
+        options.UseInMemoryDatabase(dbName));
 }
 else
 {
@@ -136,10 +141,13 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-using (var scope = app.Services.CreateScope())
+if (!isTesting)
 {
-    var context = scope.ServiceProvider.GetRequiredService<SimplePartyListContext>();
-    await DbInitializer.SeedAsync(context, scope.ServiceProvider);
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<SimplePartyListContext>();
+        await DbInitializer.SeedAsync(context, scope.ServiceProvider);
+    }
 }
 
 app.Run();

@@ -10,10 +10,12 @@ public class ChosenListEndpointTests : IDisposable
 
     public ChosenListEndpointTests()
     {
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseSetting("ASPNETCORE_ENVIRONMENT", "Testing");
         });
+        TestSeedHelper.SeedAdminAsync(_factory.Services).GetAwaiter().GetResult();
     }
 
     public void Dispose()

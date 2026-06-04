@@ -10,10 +10,9 @@ public class EventEndpointTests : IDisposable
 
     public EventEndpointTests()
     {
-        _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.UseSetting("ASPNETCORE_ENVIRONMENT", "Testing");
-        });
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
+        _factory = new WebApplicationFactory<Program>();
+        TestSeedHelper.SeedAdminAsync(_factory.Services).GetAwaiter().GetResult();
     }
 
     public void Dispose()
