@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SimplePartyList.API;
 using SimplePartyList.API.Endpoints;
 using SimplePartyList.Core.Entities;
 using SimplePartyList.Core.Interfaces;
@@ -78,6 +79,15 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowWeb");
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSecurityHeaders(new Dictionary<string, string>
+{
+    ["X-Content-Type-Options"] = "nosniff",
+    ["Referrer-Policy"] = "strict-origin-when-cross-origin",
+    ["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()",
+    ["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+});
+
 app.MapControllers();
 app.MapEventEndpoints();
 app.MapChosenListEndpoints();

@@ -1,5 +1,15 @@
 ﻿# SimplePartyList - Plano de Desenvolvimento
 
+## Status Atual
+
+| Item | Status |
+|------|--------|
+| **Branch** | `feature/dashboard-admin` |
+| **Build** | ✅ **0 erros** |
+| **Testes** | ✅ **86 passando** (39 Services + 5 Auth + 10 Event + 5 ChosenList + 11 Item + 8 Chosen + 6 Blazor helper + 2 integração) |
+| **Último commit** | `b148c55` — "feat: dashboard admin + login corporativo + refatoração auth" |
+| **Próximo passo** | Responsividade mobile (Etapa 8) |
+
 ## Tecnologias
 
 - .NET 9
@@ -8,7 +18,7 @@
 - Entity Framework Core + Npgsql (PostgreSQL)
 - Supabase (PostgreSQL hosted)
 - ASP.NET Core Identity + JWT Bearer
-- xUnit (TDD) — **86 testes** (39 Services + 5 Auth + 10 Event + 5 ChosenList + 11 Item + 8 Chosen + 6 Blazor helper + 2 integração) ✅
+- xUnit (TDD)
 
 ---
 
@@ -406,7 +416,7 @@ Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
 - [x] Deletar branch `feature/blazor-pagina-publica`
 - [x] Criar branch `feature/dashboard-admin`
 
-### Etapa 6 - Dashboard Admin (Blazor autenticado)
+### Etapa 6 - Dashboard Admin (Blazor autenticado) ✅
 - [x] Tela de login (`/login`, `Login.razor`) com `AdminAuthHelper`
 - [x] `AdminAuthHelper.cs` — auth service com `IHttpClientFactory` + `TokenStore` scoped
 - [x] `TokenStore.cs` — scoped JWT storage (sem JS interop, funciona em prerendering)
@@ -423,16 +433,30 @@ Sequência: **DTO(s) → Endpoints (Minimal API) → Testes**
 - [x] `TokenStore` scoped resolve problema de JS interop em prerendering
 - [x] `preview-admin.html` — preview standalone com login corporativo + dashboard
 - [x] `wwwroot/images/` — pasta criada para imagens estáticas
-- [ ] **Dashboard Admin** funcional — testar fluxo completo login → dashboard → criar → detalhe
+- [x] Commit `b148c55` na branch `feature/dashboard-admin`
+- [ ] **Merge** `feature/dashboard-admin` → `develop` (após testes manuais de fluxo completo)
 
-### Etapa 7 - Expiração + Validações
+### Etapa 7 - Expiração + Validações ✅
 - [x] Verificar expiração ao acessar lista (API + frontend)
 - [x] Bloquear submissão se expirado (desabilitar inputs + botão)
 - [x] Validações de formulário (nome + itens obrigatórios, só após interagir)
 - [x] Feedback visual para o usuário (loading, erros, sucesso, spinner)
-- [ ] Validação server-side no submit (se expirou entre abrir e submeter)
+- [ ] Validação server-side no submit (se expirou entre abrir e submeter) — *baixa prioridade*
 
-### Etapa 8 - Ajustes Finais
-- [ ] UI responsiva (CSS básico ou Bootstrap)
+### Etapa 8 - Responsividade Mobile 📱
+- [ ] Sidebar admin colapsável (hamburger menu) em < 768px
+- [ ] Event cards responsivos (grid 1 coluna em mobile)
+- [ ] Tabelas de itens/escolhas em EventoDetalhe — scroll horizontal ou card view
+- [ ] Login card com padding reduzido em telas < 400px
+- [ ] Inputs e botões com touch target mínimo 44px
+- [ ] Página pública `/list/{guid}` — layout adaptável (fitas decorativas podem quebrar em telas estreitas)
+- [ ] Topbar pública com font-size adequado para mobile
+- [ ] Popup de confirmação com width 100% em telas pequenas
+- [ ] Testar em viewports 320px, 375px, 414px, 768px
+
+### Etapa 9 - Ajustes Finais
 - [ ] Testes end-to-end manuais
 - [ ] Revisão geral de segurança
+- [ ] Merge `feature/dashboard-admin` → `develop`
+- [ ] Deletar branch `feature/dashboard-admin`
+- [ ] Publicar/Deploy
