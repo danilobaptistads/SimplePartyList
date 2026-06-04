@@ -32,8 +32,14 @@ builder.Services.AddIdentity<Admin, IdentityRole>()
     .AddEntityFrameworkStores<SimplePartyListContext>()
     .AddDefaultTokenProviders();
 
-var jwtKey = builder.Configuration["Jwt:Key"]
-    ?? throw new InvalidOperationException("Jwt:Key n�o configurado.");
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+{
+    if (builder.Environment.IsEnvironment("Testing"))
+        jwtKey = "TestingKey_SimplePartyList_SuperSecret_32chars!!";
+    else
+        throw new InvalidOperationException("Jwt:Key n�o configurado.");
+}
 var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
 var jwtAudience = builder.Configuration["Jwt:Audience"]!;
 
