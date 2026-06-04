@@ -12,7 +12,6 @@ using SimplePartyList.Web.Components;
 using SimplePartyList.Web.Components.Pages.Admin;
 using SimplePartyList.Web.Components.Pages.List;
 using SimplePartyList.Web.Endpoints;
-using Microsoft.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,19 +83,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<ListPageHelper>()
-    .ConfigureHttpClient((sp, client) =>
-    {
-        var nav = sp.GetRequiredService<NavigationManager>();
-        client.BaseAddress = new Uri(nav.BaseUri);
-    });
+builder.Services.AddHttpClient<ListPageHelper>(client => { });
 
-builder.Services.AddHttpClient("AdminApi")
-    .ConfigureHttpClient((sp, client) =>
-    {
-        var nav = sp.GetRequiredService<NavigationManager>();
-        client.BaseAddress = new Uri(nav.BaseUri);
-    });
+builder.Services.AddHttpClient("AdminApi", client => { });
 
 builder.Services.AddScoped<AdminAuthHelper>();
 builder.Services.AddScoped<TokenStore>();

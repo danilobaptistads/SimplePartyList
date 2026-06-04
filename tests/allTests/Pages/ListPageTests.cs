@@ -1,12 +1,21 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components;
 using Moq;
 using Moq.Protected;
 using SimplePartyList.Core.DTOs;
 using SimplePartyList.Web.Components.Pages.List;
 
 namespace SimplePartyList.Tests.Pages;
+
+public class TestNavManager : NavigationManager
+{
+    public TestNavManager()
+    {
+        Initialize("http://localhost/", "http://localhost/");
+    }
+}
 
 public class ListPageTests
 {
@@ -16,11 +25,8 @@ public class ListPageTests
 
     public ListPageTests()
     {
-        _httpClient = new HttpClient(_handlerMock.Object)
-        {
-            BaseAddress = new Uri("http://localhost")
-        };
-        _helper = new ListPageHelper(_httpClient);
+        _httpClient = new HttpClient(_handlerMock.Object);
+        _helper = new ListPageHelper(_httpClient, new TestNavManager());
     }
 
     private void SetupMockResponse(HttpStatusCode statusCode, object? content = null)
