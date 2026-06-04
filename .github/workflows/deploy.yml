@@ -1,11 +1,11 @@
-name: CI
+name: Build, test and deploy
 
 on:
   push:
     branches: [main]
 
 jobs:
-  test:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,3 +19,13 @@ jobs:
       - run: dotnet test tests/tests.csproj -c Release
         env:
           ASPNETCORE_ENVIRONMENT: Testing
+
+      - run: dotnet publish src/web/web.csproj -c Release --output ./publish --no-restore
+
+      - name: Deploy to MonsterASP.NET via WebDeploy
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name: ${{ secrets.WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.SERVER_USERNAME }}
+          server-password: ${{ secrets.SERVER_PASSWORD }}
