@@ -83,15 +83,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<ListPageHelper>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5193");
-});
+builder.Services.AddHttpClient<ListPageHelper>(client => { });
 
-builder.Services.AddHttpClient("AdminApi", client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5193");
-});
+builder.Services.AddHttpClient("AdminApi", client => { });
 
 builder.Services.AddScoped<AdminAuthHelper>();
 builder.Services.AddScoped<TokenStore>();
