@@ -785,6 +785,16 @@ main article.content {
     .tape {
         display: none;
     }
+
+    /* Modal buttons stack vertically on mobile */
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .modal-actions .btn,
+    .modal-actions .btn-submit {
+        width: 100%;
+    }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
