@@ -26,8 +26,21 @@
 </div>
 
 @code {
+    private string? _returnUrl;
+
+    protected override void OnInitialized()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("returnUrl", out var value))
+            _returnUrl = value;
+    }
+
     private void Voltar()
     {
-        Navigation.NavigateTo("/admin/dashboard");
+        Navigation.NavigateTo(
+            string.IsNullOrWhiteSpace(_returnUrl)
+                ? "/admin/dashboard"
+                : _returnUrl);
     }
 }

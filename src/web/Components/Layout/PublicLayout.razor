@@ -1,3 +1,4 @@
+@inject NavigationManager Navigation
 @inherits LayoutComponentBase
 
 <div class="top-bar">
@@ -5,9 +6,20 @@
         <img src="/images/logobranco.png" alt="SPL" class="logo-img">
         SIMPLE PARTY LIST
     </div>
-    <a href="/sobre" class="admin-link">SOBRE</a>
+    <a href="#"
+       class="admin-link"
+       @onclick="OpenAbout"
+       @onclick:preventDefault="true">SOBRE</a>
 </div>
 
 <main class="page-wrapper">
     @Body
 </main>
+
+@code {
+    private void OpenAbout()
+    {
+        var path = Navigation.ToBaseRelativePath(Navigation.Uri);
+        Navigation.NavigateTo($"/sobre?returnUrl={Uri.EscapeDataString(path)}");
+    }
+}
