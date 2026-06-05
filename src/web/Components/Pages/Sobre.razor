@@ -25,20 +25,8 @@
 </div>
 
 @code {
-    private string? _returnUrl;
-
-    protected override void OnInitialized()
-    {
-        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-        if (uri.Query.Contains("returnUrl="))
-        {
-            var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            _returnUrl = qs["returnUrl"];
-        }
-    }
-
     private void Voltar()
     {
-        Navigation.NavigateTo(_returnUrl ?? "/");
+        Navigation.NavigateTo("-1");
     }
 }
