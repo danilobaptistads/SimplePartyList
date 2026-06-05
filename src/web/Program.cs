@@ -12,6 +12,7 @@ using SimplePartyList.Web.Components;
 using SimplePartyList.Web.Components.Pages.Admin;
 using SimplePartyList.Web.Components.Pages.List;
 using SimplePartyList.Web.Endpoints;
+using SimplePartyList.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,6 +90,7 @@ builder.Services.AddHttpClient("AdminApi", client => { });
 
 builder.Services.AddScoped<AdminAuthHelper>();
 builder.Services.AddScoped<TokenStore>();
+builder.Services.AddScoped<NavigationContextService>();
 
 var app = builder.Build();
 
