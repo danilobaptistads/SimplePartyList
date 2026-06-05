@@ -34,8 +34,9 @@
         }
     }
 
-    private void Voltar()
+    private async Task Voltar()
     {
         Navigation.NavigateTo(_returnUrl ?? "/");
+        await Task.CompletedTask;
     }
 }
