@@ -1,6 +1,7 @@
 @page "/sobre"
 @layout Layout.PublicLayout
 @inject NavigationManager Navigation
+@inject NavigationContextService NavCtx
 
 <PageTitle>Sobre - Simple Party List</PageTitle>
 
@@ -11,7 +12,7 @@
         </div>
         <h3>Sobre</h3>
         <p style="font-size:0.9rem;color:#333;margin-bottom:10px;line-height:1.6;">
-            Esta aplicação nasceu durante os preparativos para o chá de bebê do Ethan. A ideia era criar uma forma simples e prática de organizar a lista de presentes e facilitar a participação de todos.
+            Esta aplicação nasceu durante os preparativos para o chá de bebê do meu filho Ethan. A ideia era criar uma forma simples e prática de organizar a lista de presentes e facilitar a participação de todos.
         </p>
         <p style="font-size:0.85rem;color:#777;margin-bottom:0;line-height:1.5;">
             O Simple Party List permite que os convidados acessem um link público, escolham os itens desejados e que o organizador acompanhe as escolhas em tempo real.
@@ -22,20 +23,13 @@
 </div>
 
 @code {
-    private string? _returnUrl;
-
-    protected override void OnInitialized()
-    {
-        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-        if (uri.Query.Contains("returnUrl="))
-        {
-            var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            _returnUrl = qs["returnUrl"];
-        }
-    }
-
     private void Voltar()
     {
-        Navigation.NavigateTo(_returnUrl ?? "/");
+        Navigation.NavigateTo(NavCtx.Origem switch
+        {
+            "Admin" => "/admin/dashboard",
+            "Publico" => "/",
+            _ => "/"
+        });
     }
 }
