@@ -10,11 +10,11 @@
             <img src="/images/logoverde.png" alt="SPL">
         </div>
         <h3>Sobre</h3>
-        <p style="font-size:0.9rem;color:#555;margin-bottom:6px;">
-            Esta aplicação foi feita para o chá de bebê do meu filho Ethan.
+        <p style="font-size:0.9rem;color:#333;margin-bottom:10px;line-height:1.6;">
+            Esta aplicação nasceu durante os preparativos para o chá de bebê do Ethan. A ideia era criar uma forma simples e prática de organizar a lista de presentes e facilitar a participação de todos.
         </p>
-        <p style="font-size:0.85rem;color:#777;margin-bottom:0;">
-            Simple Party List permite que os convidados acessem o link público, escolham os itens desejados e o organizador acompanhe as escolhas em tempo real.
+        <p style="font-size:0.85rem;color:#777;margin-bottom:0;line-height:1.5;">
+            O Simple Party List permite que os convidados acessem um link público, escolham os itens desejados e que o organizador acompanhe as escolhas em tempo real.
         </p>
         <button class="btn btn-outline-primary btn-custom" style="margin-top:20px;"
                 @onclick="Voltar">Voltar</button>
@@ -22,8 +22,20 @@
 </div>
 
 @code {
+    private string? _returnUrl;
+
+    protected override void OnInitialized()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (uri.Query.Contains("returnUrl="))
+        {
+            var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            _returnUrl = qs["returnUrl"];
+        }
+    }
+
     private void Voltar()
     {
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo(_returnUrl ?? "/");
     }
 }
