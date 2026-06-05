@@ -108,6 +108,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await Auth.TryRestoreSessionAsync();
         if (Auth.IsAuthenticated)
             await CarregarEventos();
         else

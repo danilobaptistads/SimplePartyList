@@ -1,13 +1,17 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@layout Layout.BlankLayout
 @inject NavigationManager Navigation
 @inject AdminAuthHelper Auth
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+        await Auth.TryRestoreSessionAsync();
         if (Auth.IsAuthenticated)
-            Navigation.NavigateTo("/admin/dashboard");
+            Navigation.NavigateTo("/admin/dashboard", replace: true);
         else
-            Navigation.NavigateTo("/login");
+            Navigation.NavigateTo("/login", replace: true);
     }
 }

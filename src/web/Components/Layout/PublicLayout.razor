@@ -1,13 +1,18 @@
 @inherits LayoutComponentBase
+@inject NavigationManager Navigation
 
 <div class="top-bar">
     <div class="logo">
         <img src="/images/logobranco.png" alt="SPL" class="logo-img">
         SIMPLE PARTY LIST
     </div>
-    <a href="/sobre" class="admin-link">SOBRE</a>
+    <a href="/sobre?returnUrl=@ReturnUrl" class="admin-link">SOBRE</a>
 </div>
 
 <main class="page-wrapper">
     @Body
 </main>
+
+@code {
+    private string ReturnUrl => "/" + Navigation.ToBaseRelativePath(Navigation.Uri);
+}

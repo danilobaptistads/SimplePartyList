@@ -11,10 +11,13 @@
         </div>
         <h3>Sobre</h3>
         <p style="font-size:0.9rem;color:#333;margin-bottom:10px;line-height:1.6;">
-            Esta aplicação nasceu durante os preparativos para o chá de bebê do Ethan. A ideia era criar uma forma simples e prática de organizar a lista de presentes e facilitar a participação de todos.
+            Esta aplicação nasceu durante os preparativos para o chá de bebê do meu filho Ethan. A ideia era criar uma forma simples e prática de organizar a lista de presentes e facilitar a participação de todos.
         </p>
         <p style="font-size:0.85rem;color:#777;margin-bottom:0;line-height:1.5;">
             O Simple Party List permite que os convidados acessem um link público, escolham os itens desejados e que o organizador acompanhe as escolhas em tempo real.
+        </p>
+        <p style="font-size:0.85rem;color:#777;margin-top:12px;margin-bottom:0;line-height:1.5;">
+           Um agradecimento especial à minha esposa, Jenifer, pelo incentivo, apoio e confiança durante toda esta jornada. Aos meus filhos, Otto e Ethan, que em breve chegará para completar nossa família, por serem fonte de tantas alegrias e da minha inspiração diária. Este projeto é dedicado a vocês.
         </p>
         <button class="btn btn-outline-primary btn-custom" style="margin-top:20px;"
                 @onclick="Voltar">Voltar</button>
@@ -34,9 +37,8 @@
         }
     }
 
-    private async Task Voltar()
+    private void Voltar()
     {
         Navigation.NavigateTo(_returnUrl ?? "/");
-        await Task.CompletedTask;
     }
 }
