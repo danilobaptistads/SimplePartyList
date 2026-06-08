@@ -11,14 +11,14 @@ public class AdminAuthHelper
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly TokenStore _tokenStore;
     private readonly NavigationManager _nav;
-    private readonly ProtectedSessionStorage _sessionStorage;
+    private readonly ProtectedLocalStorage _localStorage;
 
-    public AdminAuthHelper(IHttpClientFactory httpClientFactory, TokenStore tokenStore, NavigationManager nav, ProtectedSessionStorage sessionStorage)
+    public AdminAuthHelper(IHttpClientFactory httpClientFactory, TokenStore tokenStore, NavigationManager nav, ProtectedLocalStorage localStorage)
     {
         _httpClientFactory = httpClientFactory;
         _tokenStore = tokenStore;
         _nav = nav;
-        _sessionStorage = sessionStorage;
+        _localStorage = localStorage;
     }
 
     public async Task TryRestoreSessionAsync()
@@ -26,7 +26,7 @@ public class AdminAuthHelper
         if (_tokenStore.Token is not null) return;
         try
         {
-            var result = await _sessionStorage.GetAsync<string>("auth_token");
+            var result = await _localStorage.GetAsync<string>("auth_token");
             if (result.Success && result.Value is not null)
                 _tokenStore.Token = result.Value;
         }
@@ -55,14 +55,14 @@ public class AdminAuthHelper
         if (result is null) return false;
 
         _tokenStore.Token = result.Token;
-        await _sessionStorage.SetAsync("auth_token", result.Token);
+        await _localStorage.SetAsync("auth_token", result.Token);
         return true;
     }
 
     public async Task LogoutAsync()
     {
         _tokenStore.Token = null;
-        await _sessionStorage.DeleteAsync("auth_token");
+        await _localStorage.DeleteAsync("auth_token");
     }
 
     public async Task<T?> GetAsync<T>(string url) where T : class
