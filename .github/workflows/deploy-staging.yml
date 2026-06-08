@@ -1,0 +1,38 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  build_and_deploy:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - run: dotnet restore
+
+      - run: dotnet test tests/tests.csproj -c Release
+        env:
+          ASPNETCORE_ENVIRONMENT: Testing
+
+      - run: dotnet publish src/web/web.csproj -c Release --output ./publish --no-restore
+
+      - name: Install Web Deploy
+        run: |
+          if (-not (Test-Path "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe")) {
+            choco install webdeploy -y --no-progress
+          }
+        shell: pwsh
+
+      - name: Deploy to Staging via WebDeploy
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name: ${{ secrets.STAGING_WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.STAGING_SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.STAGING_SERVER_USERNAME }}
+          server-password: ${{ secrets.STAGING_SERVER_PASSWORD }}
