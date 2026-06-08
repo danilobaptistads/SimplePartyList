@@ -91,6 +91,7 @@ builder.Services.AddHttpClient("AdminApi", client => { });
 builder.Services.AddScoped<AdminAuthHelper>();
 builder.Services.AddScoped<TokenStore>();
 builder.Services.AddScoped<NavigationContextService>();
+builder.Services.AddScoped<NavigationHelper>();
 
 var app = builder.Build();
 

@@ -6,6 +6,18 @@
 
 <PageTitle>Login - Simple Party List</PageTitle>
 
+@if (_verificando)
+{
+    <div class="login-section">
+        <div class="login-card text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3 text-muted">Verificando...</p>
+        </div>
+    </div>
+}
+else
+{
+
 <div class="login-section">
     <div class="login-card">
     <div class="login-logo">
@@ -41,11 +53,22 @@
     </div>
 </div>
 
+}
+
 @code {
     private string _email = string.Empty;
     private string _senha = string.Empty;
     private string? _erro;
     private bool _carregando;
+    private bool _verificando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Auth.TryRestoreSessionAsync();
+        if (Auth.IsAuthenticated)
+            Navigation.NavigateTo("/admin/dashboard", replace: true);
+        _verificando = false;
+    }
 
     private async Task LoginAsync()
     {
