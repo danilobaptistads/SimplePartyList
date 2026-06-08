@@ -16,6 +16,20 @@ jobs:
 
       - run: dotnet restore
 
+      - name: Create appsettings.Production.json
+        run: |
+          @'
+          {
+            "ConnectionStrings": {
+              "DefaultConnection": "${{ secrets.STAGING_CONNECTION_STRING }}"
+            },
+            "Jwt": {
+              "Key": "${{ secrets.STAGING_JWT_KEY }}"
+            }
+          }
+          '@ | Out-File -FilePath src/web/appsettings.Production.json -Encoding utf8
+        shell: pwsh
+
       - run: dotnet test tests/tests.csproj -c Release
         env:
           ASPNETCORE_ENVIRONMENT: Testing
