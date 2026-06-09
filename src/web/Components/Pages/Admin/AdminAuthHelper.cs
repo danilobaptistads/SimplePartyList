@@ -24,6 +24,7 @@ public class AdminAuthHelper
     public async Task TryRestoreSessionAsync()
     {
         if (_tokenStore.Token is not null) return;
+        if (_tokenStore.LoggedOut) return;
         try
         {
             var result = await _localStorage.GetAsync<string>("auth_token");
@@ -62,6 +63,7 @@ public class AdminAuthHelper
     public async Task LogoutAsync()
     {
         _tokenStore.Token = null;
+        _tokenStore.LoggedOut = true;
         await _localStorage.DeleteAsync("auth_token");
     }
 
