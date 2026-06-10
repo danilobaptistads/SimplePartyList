@@ -41,16 +41,10 @@ public static class EventEndpoints
         group.MapGet("/{id:guid}", async (
             Guid id,
             IEventService eventService,
-            SimplePartyListContext dbContext,
-            ClaimsPrincipal user) =>
+            SimplePartyListContext dbContext) =>
         {
             var ev = await eventService.GetByIdAsync(id);
-            if (ev is null) return Results.NotFound();
-
-            var adminId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            if (ev.AdminId != adminId) return Results.Forbid();
-
-            return Results.Ok(await MapToDtoAsync(ev, dbContext));
+            return ev is null ? Results.NotFound() : Results.Ok(await MapToDtoAsync(ev, dbContext));
         });
 
         group.MapPut("/{id:guid}", async (
