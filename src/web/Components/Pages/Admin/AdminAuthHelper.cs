@@ -27,23 +27,11 @@ public class AdminAuthHelper
         try
         {
             var result = await _localStorage.GetAsync<string>("auth_token");
-            if (!result.Success || result.Value is null) return;
-
-            _tokenStore.Token = result.Value;
-            var client = CreateClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/api/auth/me");
-            AddAuthHeader(request);
-            var response = await client.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                _tokenStore.Token = null;
-                await _localStorage.DeleteAsync("auth_token");
-            }
+            if (result.Success && result.Value is not null)
+                _tokenStore.Token = result.Value;
         }
         catch
         {
-            _tokenStore.Token = null;
-            await _localStorage.DeleteAsync("auth_token");
         }
     }
 

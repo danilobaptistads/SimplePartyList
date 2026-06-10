@@ -29,18 +29,6 @@ public class AuthController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("me")]
-    public IActionResult Me()
-    {
-        return Ok(new
-        {
-            userId = User.FindFirstValue(ClaimTypes.NameIdentifier),
-            email = User.FindFirstValue(ClaimTypes.Email),
-            name = User.FindFirstValue(ClaimTypes.Name)
-        });
-    }
-
-    [Authorize]
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
