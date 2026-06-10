@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SimplePartyList.Core.Entities;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using SimplePartyList.Core.Interfaces;
 using SimplePartyList.Infrastructure.Data;
 using SimplePartyList.Infrastructure.Services;
@@ -34,7 +36,11 @@ else
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
-builder.Services.AddIdentity<Admin, IdentityRole>()
+builder.Services.AddIdentity<Admin, IdentityRole>(options =>
+{
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+})
     .AddEntityFrameworkStores<SimplePartyListContext>()
     .AddDefaultTokenProviders();
 
@@ -85,6 +91,19 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IChosenService, ChosenService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddControllers();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = 429;
+    options.AddFixedWindowLimiter("Api", opt =>
+    {
+        opt.PermitLimit = 60;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+});
+
 builder.Services.AddOpenApi();
 
 // === Web Services ===
@@ -116,7 +135,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowWeb");
-app.UseIpBlocking(["178.63.0.0/16"]);
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
