@@ -1,6 +1,9 @@
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using SimplePartyList.Core.DTOs;
+using SimplePartyList.Core.Entities;
 
 namespace SimplePartyList.Tests.Endpoints;
 
@@ -186,12 +189,17 @@ public class EventEndpointTests : IDisposable
         var created = await postResponse.Content.ReadFromJsonAsync<AdminEventResponseDto>();
 
         var emailB = $"other-{Guid.NewGuid()}@test.com";
-        await client.PostAsJsonAsync("/api/auth/register", new RegisterDto
+        using (var scope = _factory.Services.CreateScope())
         {
-            Name = "Outro Admin",
-            Email = emailB,
-            Password = "Test@123"
-        });
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Admin>>();
+            var admin = new Admin
+            {
+                UserName = emailB,
+                Email = emailB,
+                Name = "Outro Admin"
+            };
+            await userManager.CreateAsync(admin, "Test@123");
+        }
         var loginB = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
         {
             Email = emailB,
@@ -244,12 +252,17 @@ public class EventEndpointTests : IDisposable
         var created = await postResponse.Content.ReadFromJsonAsync<AdminEventResponseDto>();
 
         var emailB = $"other-{Guid.NewGuid()}@test.com";
-        await client.PostAsJsonAsync("/api/auth/register", new RegisterDto
+        using (var scope = _factory.Services.CreateScope())
         {
-            Name = "Outro Admin",
-            Email = emailB,
-            Password = "Test@123"
-        });
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Admin>>();
+            var admin = new Admin
+            {
+                UserName = emailB,
+                Email = emailB,
+                Name = "Outro Admin"
+            };
+            await userManager.CreateAsync(admin, "Test@123");
+        }
         var loginB = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
         {
             Email = emailB,
