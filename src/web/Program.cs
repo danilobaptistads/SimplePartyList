@@ -38,10 +38,13 @@ builder.Services.AddIdentity<Admin, IdentityRole>()
     .AddEntityFrameworkStores<SimplePartyListContext>()
     .AddDefaultTokenProviders();
 
-var jwtKey = builder.Configuration["Jwt:Key"]
-    ?? (isTesting || builder.Environment.IsDevelopment()
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+{
+    jwtKey = isTesting || builder.Environment.IsDevelopment()
         ? Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32))
-        : throw new InvalidOperationException("Jwt:Key is required. Configure it via Jwt__Key environment variable."));
+        : throw new InvalidOperationException("Jwt:Key is required. Configure it via Jwt__Key environment variable.");
+}
 
 builder.Configuration["Jwt:Key"] = jwtKey;
 var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
