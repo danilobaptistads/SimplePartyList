@@ -113,7 +113,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowWeb");
-app.UseIpBlocking(["178.63.0.0/16"]);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
