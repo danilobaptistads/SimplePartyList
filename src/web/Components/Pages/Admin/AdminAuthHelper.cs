@@ -35,11 +35,15 @@ public class AdminAuthHelper
             AddAuthHeader(request);
             var response = await client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
+            {
                 _tokenStore.Token = null;
+                await _localStorage.DeleteAsync("auth_token");
+            }
         }
         catch
         {
             _tokenStore.Token = null;
+            await _localStorage.DeleteAsync("auth_token");
         }
     }
 
