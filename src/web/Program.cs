@@ -157,13 +157,4 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-if (!isTesting)
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<SimplePartyListContext>();
-        await DbInitializer.SeedAsync(context, scope.ServiceProvider);
-    }
-}
-
 app.Run();
