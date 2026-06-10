@@ -1,7 +1,9 @@
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using SimplePartyList.Core.DTOs;
+using SimplePartyList.Core.Entities;
 using SimplePartyList.Core.Interfaces;
 
 namespace SimplePartyList.Tests.Endpoints;
@@ -64,14 +66,18 @@ public class ItemEndpointTests : IDisposable
 
     private async Task<HttpClient> RegisterAndLoginAdminB()
     {
-        var client = _factory.CreateClient();
+        using var scope = _factory.Services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Admin>>();
         var email = $"other-{Guid.NewGuid()}@test.com";
-        await client.PostAsJsonAsync("/api/auth/register", new RegisterDto
+        var admin = new Admin
         {
-            Name = "Outro Admin",
+            UserName = email,
             Email = email,
-            Password = "Test@123"
-        });
+            Name = "Outro Admin"
+        };
+        await userManager.CreateAsync(admin, "Test@123");
+
+        var client = _factory.CreateClient();
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
         {
             Email = email,
