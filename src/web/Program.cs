@@ -14,11 +14,8 @@ using SimplePartyList.Web.Components;
 using SimplePartyList.Web.Components.Pages.Admin;
 using SimplePartyList.Web.Components.Pages.List;
 using SimplePartyList.Web.Endpoints;
-using SimplePartyList.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// === API Services ===
 
 var isTesting = builder.Environment.IsEnvironment("Testing")
     || "Testing".Equals(builder.Configuration["ASPNETCORE_ENVIRONMENT"], StringComparison.OrdinalIgnoreCase)
@@ -106,8 +103,6 @@ builder.Services.AddRateLimiter(options =>
 
 builder.Services.AddOpenApi();
 
-// === Web Services ===
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -117,12 +112,8 @@ builder.Services.AddHttpClient("AdminApi", client => { });
 
 builder.Services.AddScoped<AdminAuthHelper>();
 builder.Services.AddScoped<TokenStore>();
-builder.Services.AddScoped<NavigationContextService>();
-builder.Services.AddScoped<NavigationHelper>();
 
 var app = builder.Build();
-
-// === Middleware Pipeline ===
 
 if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))
 {
@@ -165,14 +156,5 @@ app.MapChosenEndpoints();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
-if (!isTesting)
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<SimplePartyListContext>();
-        await DbInitializer.SeedAsync(context, scope.ServiceProvider);
-    }
-}
 
 app.Run();

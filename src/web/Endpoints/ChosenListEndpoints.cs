@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using SimplePartyList.Core.DTOs;
 using SimplePartyList.Core.Interfaces;
 

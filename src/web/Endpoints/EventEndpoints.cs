@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SimplePartyList.Core.DTOs;
 using SimplePartyList.Core.Interfaces;
 using SimplePartyList.Infrastructure.Data;

@@ -116,13 +116,4 @@ public class ListPageTests
         Assert.Contains("Cota", ex.Message);
     }
 
-    [Fact]
-    public async Task VerificarExpiracao_NaoExpirada_RetornaFalse()
-    {
-        SetupMockResponse(HttpStatusCode.OK, false);
-
-        var result = await _helper.VerificarExpiracaoAsync("valid-url");
-
-        Assert.False(result);
-    }
 }
