@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace SimplePartyList.Core.Entities;
 
 public class Item

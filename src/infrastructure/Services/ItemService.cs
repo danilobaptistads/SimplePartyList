@@ -29,13 +29,6 @@ public class ItemService : IItemService
         return item;
     }
 
-    public async Task<List<Item>> SearchByNameAsync(string name)
-    {
-        return await _context.Items
-            .Where(i => i.Name.Contains(name))
-            .ToListAsync();
-    }
-
     public async Task<Item?> GetByIdAsync(Guid itemId)
     {
         return await _context.Items.FindAsync(itemId);
@@ -61,15 +54,6 @@ public class ItemService : IItemService
 
         _context.Items.Remove(item);
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<List<Item>> GetByListUrlAsync(Guid listUrl)
-    {
-        var chosenList = await _context.ChosenLists
-            .Include(cl => cl.Items)
-            .FirstOrDefaultAsync(cl => cl.ListUrl == listUrl);
-
-        return chosenList?.Items.ToList() ?? [];
     }
 
     public async Task<List<Item>> GetByChosenListIdAsync(Guid chosenListId)

@@ -48,34 +48,6 @@ public class ItemServiceTests
     }
 
     [Fact]
-    public async Task SearchByNameAsync_ShouldReturnMatchingItems()
-    {
-        using var context = CreateContext();
-
-        context.Items.AddRange(
-            new Item { Name = "Cerveja Skol", MaxQuantity = 50, ChosenListId = Guid.NewGuid() },
-            new Item { Name = "Cerveja Brahma", MaxQuantity = 30, ChosenListId = Guid.NewGuid() },
-            new Item { Name = "Refrigerante", MaxQuantity = null, ChosenListId = Guid.NewGuid() }
-        );
-        await context.SaveChangesAsync();
-
-        var itemService = new ItemService(context);
-        var result = await itemService.SearchByNameAsync("Cerveja");
-
-        Assert.Equal(2, result.Count);
-    }
-
-    [Fact]
-    public async Task SearchByNameAsync_ShouldReturnEmpty_WhenNoMatch()
-    {
-        using var context = CreateContext();
-        var itemService = new ItemService(context);
-        var result = await itemService.SearchByNameAsync("Vodka");
-
-        Assert.Empty(result);
-    }
-
-    [Fact]
     public async Task GetByIdAsync_ShouldReturnItem()
     {
         using var context = CreateContext();
@@ -164,35 +136,4 @@ public class ItemServiceTests
             () => itemService.DeleteAsync(new Item { ItemId = Guid.NewGuid() }));
     }
 
-    [Fact]
-    public async Task GetByListUrlAsync_ShouldReturnItems()
-    {
-        using var context = CreateContext();
-        var chosenList = new ChosenList { ListUrl = Guid.NewGuid(), Expire = DateTime.UtcNow.AddDays(5) };
-        context.ChosenLists.Add(chosenList);
-        context.Items.AddRange(
-            new Item { Name = "Cerveja", MaxQuantity = 50, ChosenListId = chosenList.ChosenListId },
-            new Item { Name = "Refrigerante", MaxQuantity = null, ChosenListId = chosenList.ChosenListId }
-        );
-        await context.SaveChangesAsync();
-
-        var itemService = new ItemService(context);
-        var result = await itemService.GetByListUrlAsync(chosenList.ListUrl);
-
-        Assert.Equal(2, result.Count);
-    }
-
-    [Fact]
-    public async Task GetByListUrlAsync_ShouldReturnEmpty_WhenNoItems()
-    {
-        using var context = CreateContext();
-        var chosenList = new ChosenList { ListUrl = Guid.NewGuid(), Expire = DateTime.UtcNow.AddDays(5) };
-        context.ChosenLists.Add(chosenList);
-        await context.SaveChangesAsync();
-
-        var itemService = new ItemService(context);
-        var result = await itemService.GetByListUrlAsync(chosenList.ListUrl);
-
-        Assert.Empty(result);
-    }
 }

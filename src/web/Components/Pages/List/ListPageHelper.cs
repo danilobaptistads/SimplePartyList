@@ -24,13 +24,6 @@ public class ListPageHelper
         return await response.Content.ReadFromJsonAsync<PublicListResponseDto>();
     }
 
-    public async Task<bool> VerificarExpiracaoAsync(string listUrl)
-    {
-        var response = await _http.GetAsync($"{BaseUrl}/api/lists/{listUrl}/expired");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<bool>();
-    }
-
     public async Task<ChosenResponseDto> SubmeterEscolhaAsync(string listUrl, string guestName, Guid itemId)
     {
         var dto = new SubmitChosenDto { GuestName = guestName, ItemId = itemId };
