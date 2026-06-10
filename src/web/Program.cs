@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SimplePartyList.Core.Entities;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using SimplePartyList.Core.Interfaces;
 using SimplePartyList.Infrastructure.Data;
 using SimplePartyList.Infrastructure.Services;
@@ -34,11 +36,23 @@ else
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
-builder.Services.AddIdentity<Admin, IdentityRole>()
+builder.Services.AddIdentity<Admin, IdentityRole>(options =>
+{
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+})
     .AddEntityFrameworkStores<SimplePartyListContext>()
     .AddDefaultTokenProviders();
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "TestingKey_SimplePartyList_SuperSecret_32chars!!";
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+{
+    jwtKey = isTesting || builder.Environment.IsDevelopment()
+        ? Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32))
+        : throw new InvalidOperationException("Jwt:Key is required. Configure it via Jwt__Key environment variable.");
+}
+
+builder.Configuration["Jwt:Key"] = jwtKey;
 var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
 var jwtAudience = builder.Configuration["Jwt:Audience"]!;
 
@@ -77,6 +91,19 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IChosenService, ChosenService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddControllers();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = 429;
+    options.AddFixedWindowLimiter("Api", opt =>
+    {
+        opt.PermitLimit = 60;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+});
+
 builder.Services.AddOpenApi();
 
 // === Web Services ===
@@ -91,6 +118,7 @@ builder.Services.AddHttpClient("AdminApi", client => { });
 builder.Services.AddScoped<AdminAuthHelper>();
 builder.Services.AddScoped<TokenStore>();
 builder.Services.AddScoped<NavigationContextService>();
+builder.Services.AddScoped<NavigationHelper>();
 
 var app = builder.Build();
 
@@ -107,6 +135,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowWeb");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
