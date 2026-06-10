@@ -70,7 +70,13 @@ public class AdminAuthHelper
     public async Task LogoutAsync()
     {
         _tokenStore.Token = null;
-        await _localStorage.DeleteAsync("auth_token");
+        try
+        {
+            await _localStorage.DeleteAsync("auth_token");
+        }
+        catch
+        {
+        }
     }
 
     public async Task<T?> GetAsync<T>(string url) where T : class
