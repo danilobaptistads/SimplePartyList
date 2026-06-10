@@ -22,18 +22,6 @@ jobs:
 
       - run: dotnet publish src/web/web.csproj -c Release --output ./publish --no-restore
 
-      - name: Generate appsettings.Production.json
-        shell: pwsh
-        run: |
-          $config = @"
-          {
-            "Jwt": {
-              "Key": "${{ secrets.JWT_KEY }}"
-            }
-          }
-          "@
-          $config | Out-File -FilePath ./publish/appsettings.Production.json -Encoding utf8
-
       - name: Install Web Deploy
         run: |
           if (-not (Test-Path "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe")) {

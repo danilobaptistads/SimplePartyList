@@ -38,7 +38,12 @@ builder.Services.AddIdentity<Admin, IdentityRole>()
     .AddEntityFrameworkStores<SimplePartyListContext>()
     .AddDefaultTokenProviders();
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is required. Configure it in appsettings.Production.json or environment variable.");
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? (isTesting || builder.Environment.IsDevelopment()
+        ? Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32))
+        : throw new InvalidOperationException("Jwt:Key is required. Configure environment variable."));
+
+builder.Configuration["Jwt:Key"] = jwtKey;
 var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
 var jwtAudience = builder.Configuration["Jwt:Audience"]!;
 
