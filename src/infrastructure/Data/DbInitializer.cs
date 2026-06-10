@@ -16,24 +16,16 @@ public static class DbInitializer
                 await context.Database.MigrateAsync();
         }
 
-        var userManager = sp.GetRequiredService<UserManager<Admin>>();
-        var admin = await userManager.FindByEmailAsync("spladmin@spl.com");
-
-        if (admin is null)
+        if (!await context.Users.AnyAsync(u => u.Email == "spladmin@spl.com"))
         {
-            admin = new Admin
+            var userManager = sp.GetRequiredService<UserManager<Admin>>();
+            var admin = new Admin
             {
                 UserName = "spladmin",
                 Email = "spladmin@spl.com",
                 Name = "SplAdmin"
             };
-
             await userManager.CreateAsync(admin, "SplAdmin@123");
-        }
-        else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RESET_ADMIN_PASSWORD")))
-        {
-            admin.PasswordHash = userManager.PasswordHasher.HashPassword(admin, "SplAdmin@123");
-            await userManager.UpdateAsync(admin);
         }
     }
 }

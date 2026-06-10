@@ -38,14 +38,10 @@ public static class ItemEndpoints
             Guid eventId,
             IEventService eventService,
             IItemService itemService,
-            IChosenService chosenService,
-            ClaimsPrincipal user) =>
+            IChosenService chosenService) =>
         {
             var ev = await eventService.GetByIdAsync(eventId);
             if (ev is null) return Results.NotFound();
-
-            var adminId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            if (ev.AdminId != adminId) return Results.Forbid();
 
             var items = await itemService.GetByChosenListIdAsync(ev.ChosenListId);
             var chosens = await chosenService.GetByChosenListIdAsync(ev.ChosenListId);
@@ -66,18 +62,10 @@ public static class ItemEndpoints
 
         group.MapGet("/items/{id:guid}", async (
             Guid id,
-            IItemService itemService,
-            IEventService eventService,
-            ClaimsPrincipal user) =>
+            IItemService itemService) =>
         {
             var item = await itemService.GetByIdAsync(id);
             if (item is null) return Results.NotFound();
-
-            var ev = await eventService.GetByChosenListIdAsync(item.ChosenListId);
-            if (ev is null) return Results.NotFound();
-
-            var adminId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            if (ev.AdminId != adminId) return Results.Forbid();
 
             return Results.Ok(new ItemDto
             {

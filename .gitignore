@@ -27,6 +27,4 @@ Thumbs.db
 # Temp / preview files
 preview-*.html
 *.err
-
-# Production config (contains secrets, generated at deploy time)
-appsettings.Production.json
+0
